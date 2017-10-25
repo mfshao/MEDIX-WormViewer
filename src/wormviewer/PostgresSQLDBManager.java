@@ -2,6 +2,7 @@ package wormviewer;
 
 import com.sun.rowset.CachedRowSetImpl;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -12,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 import javax.swing.table.DefaultTableModel;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -19,19 +22,62 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PostgresSQLDBManager {
 
-    public static ArrayList<String> getAllStrainTypeID() {
-        Connection conn = null;
-        Statement stmt = null;
+    private static PostgresSQLDBManager postgresSQLDBManager = null;
+
+    private final static String GET_ALL_STRAINTYPEIDS = "SELECT straintypeid FROM straintype";
+    private final static String GET_ALL_TABLE_NAMES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public'";
+
+    static {
+        postgresSQLDBManager = new PostgresSQLDBManager();
+    }
+
+    private PostgresSQLDBManager() {
+    }
+
+    public final static PostgresSQLDBManager getPostgresSQLDBManager() {
+        return postgresSQLDBManager;
+    }
+
+//    public static ArrayList<String> getAllTableColumnLabels() {
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        ArrayList<String> resultList = new ArrayList();
+//
+//        try {
+//            PreparedStatement ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_STH_FROM_TABLE);
+//            rs = stmt.executeQuery(GET_ALL_STRAINTYPEID);
+//            while (rs.next()) {
+//                resultList.add(rs.getString("straintypeid"));
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//                if (stmt != null) {
+//                    stmt.close();
+//                }
+//            } catch (SQLException ex) {
+//                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        return resultList;
+//    }
+
+    public static ArrayList<String> getAllStrainTypeIDs() {
+        PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<String> resultList = new ArrayList();
 
         try {
-            conn = ConnectionManager.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT straintypeid FROM straintype");
+            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_ALL_STRAINTYPEIDS);
+            rs = ps.executeQuery();
             while (rs.next()) {
                 resultList.add(rs.getString("straintypeid"));
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -39,11 +85,8 @@ public class PostgresSQLDBManager {
                 if (rs != null) {
                     rs.close();
                 }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
+                if (ps != null) {
+                    ps.close();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,18 +96,13 @@ public class PostgresSQLDBManager {
     }
 
     public static ArrayList<String> getAllTableNames() {
-        Connection conn = null;
-        Statement stmt = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<String> resultList = new ArrayList();
 
         try {
-            conn = ConnectionManager.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT table_name\n"
-                    + "FROM information_schema.tables\n"
-                    + "WHERE table_type='BASE TABLE'\n"
-                    + "AND table_schema='public';");
+            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_ALL_TABLE_NAMES);
+            rs = ps.executeQuery();
             while (rs.next()) {
                 resultList.add(rs.getString("table_name"));
             }
@@ -75,11 +113,8 @@ public class PostgresSQLDBManager {
                 if (rs != null) {
                     rs.close();
                 }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
+                if (ps != null) {
+                    ps.close();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,14 +124,12 @@ public class PostgresSQLDBManager {
     }
 
     public static CachedRowSet getEverythingFromImageInfo() {
-        Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         CachedRowSet rowset = null;
 
         try {
-            conn = ConnectionManager.getConnection();
-            stmt = conn.createStatement();
+            stmt = ConnectionManager.getConnectionManager().getConnection().createStatement();
             rs = stmt.executeQuery("SELECT * FROM imageinfo");
             rowset = new CachedRowSetImpl();
             rowset.populate(rs);
@@ -110,16 +143,10 @@ public class PostgresSQLDBManager {
                 if (stmt != null) {
                     stmt.close();
                 }
-                if (conn != null) {
-                    conn.close();
-                }
             } catch (SQLException ex) {
                 Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return rowset;
-    }
-
-    public static void main(String[] args) {
     }
 }
