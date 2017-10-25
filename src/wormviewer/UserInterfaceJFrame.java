@@ -5,11 +5,17 @@ import java.awt.event.ItemListener;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 public class UserInterfaceJFrame extends javax.swing.JFrame {
 
     private class DatasetComboBoxItemChangeListener implements ItemListener {
+
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -27,14 +34,31 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private class TableComboBoxItemChangeListener implements ItemListener {
+
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
                 ConfigurationManager.getConfigurationManager().getConfiguration().setTableName(item.toString());
                 populateFeatureList();
+            }
+        }
+    }
+
+    private class FeatureSelectorListSelectionHandler implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                JList list = (JList) e.getSource();
+                List selectionValues = list.getSelectedValuesList();
+                Object[] selected = selectionValues.toArray();
+                ArrayList<String> selectedFeatures = new ArrayList();
+                for (Object o : selected) {
+                   selectedFeatures.add(o.toString());
+                }
+                ConfigurationManager.getConfigurationManager().getConfiguration().setSelectedColumns(selectedFeatures);
             }
         }
     }
@@ -56,7 +80,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         datasetComboBox.addItemListener(new DatasetComboBoxItemChangeListener());
         datasetComboBox.setSelectedIndex(0);
         ConfigurationManager.getConfigurationManager().getConfiguration().setStrainTypeId(datasetComboBox.getSelectedItem().toString());
-        
+
         tableComboBox.removeAllItems();
         resultList = PostgresSQLDBManager.getAllTableNames();
         for (String s : resultList) {
@@ -66,13 +90,15 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         tableComboBox.setSelectedIndex(0);
         System.out.print(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
         ConfigurationManager.getConfigurationManager().getConfiguration().setTableName(tableComboBox.getSelectedItem().toString());
-        
+
         populateFeatureList();
+        FeatureSelectorList.addListSelectionListener(new FeatureSelectorListSelectionHandler());
     }
-    
+
     private void populateFeatureList() {
-        if (!ConfigurationManager.getConfigurationManager().getConfiguration().getStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getTableName().isEmpty()){
-            
+        if (!ConfigurationManager.getConfigurationManager().getConfiguration().getStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getTableName().isEmpty()) {
+            Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
+            FeatureSelectorList.setListData(columnNames);
         }
     }
 
@@ -177,11 +203,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
         jLabel7.setText("Summary Display");
 
-        FeatureSelectorList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(FeatureSelectorList);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -210,7 +231,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(viewFeaturesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
@@ -284,7 +305,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -346,7 +367,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 711, Short.MAX_VALUE)
+            .addGap(0, 809, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,9 +380,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 830, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

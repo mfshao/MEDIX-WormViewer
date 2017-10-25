@@ -38,33 +38,36 @@ public class PostgresSQLDBManager {
         return postgresSQLDBManager;
     }
 
-//    public static ArrayList<String> getAllTableColumnLabels() {
-//        Statement stmt = null;
-//        ResultSet rs = null;
-//        ArrayList<String> resultList = new ArrayList();
-//
-//        try {
-//            PreparedStatement ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_STH_FROM_TABLE);
-//            rs = stmt.executeQuery(GET_ALL_STRAINTYPEID);
-//            while (rs.next()) {
-//                resultList.add(rs.getString("straintypeid"));
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            try {
-//                if (rs != null) {
-//                    rs.close();
-//                }
-//                if (stmt != null) {
-//                    stmt.close();
-//                }
-//            } catch (SQLException ex) {
-//                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        return resultList;
-//    }
+    public static Vector<String> getAllTableColumnLabels(String tableName) {
+        Statement stmt = null;
+        ResultSet rs = null;
+        Vector<String> resultList = new Vector();
+        final String query = new QueryFactory("SELECT * FROM ? WHERE false").set(tableName, false).toString();
+
+        try {
+            stmt = ConnectionManager.getConnectionManager().getConnection().createStatement();
+            rs = stmt.executeQuery(query);
+            int columnCount = rs.getMetaData().getColumnCount();
+            resultList.add("*");
+            for (int column = 1; column <= columnCount; column++) {
+                resultList.add(rs.getMetaData().getColumnName(column));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resultList;
+    }
 
     public static ArrayList<String> getAllStrainTypeIDs() {
         PreparedStatement ps = null;
