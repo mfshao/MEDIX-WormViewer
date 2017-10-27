@@ -1,10 +1,8 @@
 package wormviewer;
 
 import com.sun.rowset.CachedRowSetImpl;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -12,9 +10,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
-import javax.swing.table.DefaultTableModel;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 /**
  *
@@ -26,7 +21,8 @@ public class PostgresSQLDBManager {
 
     private final static String GET_ALL_STRAINTYPEIDS = "SELECT straintypeid FROM straintype";
     private final static String GET_ALL_TABLE_NAMES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public'";
-
+    private final static String GET_KEYS_FROM_TABLE = "SELECT constraint_name, column_name FROM information_schema.key_column_usage WHERE table_name = ?;";
+    
     static {
         postgresSQLDBManager = new PostgresSQLDBManager();
     }
@@ -50,7 +46,9 @@ public class PostgresSQLDBManager {
             int columnCount = rs.getMetaData().getColumnCount();
             resultList.add("*");
             for (int column = 1; column <= columnCount; column++) {
-                resultList.add(rs.getMetaData().getColumnName(column));
+                if(!ConfigurationManager.getConfigurationManager().getConfiguration().getTableKeys().contains(rs.getMetaData().getColumnName(column))) {
+                    resultList.add(rs.getMetaData().getColumnName(column));
+                } 
             }
         } catch (SQLException ex) {
             Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -61,6 +59,38 @@ public class PostgresSQLDBManager {
                 }
                 if (stmt != null) {
                     stmt.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resultList;
+    }
+    
+    public static ArrayList<String> getAllKeysOfTable(String tableName) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<String> resultList = new ArrayList();
+
+        try {
+            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_KEYS_FROM_TABLE);
+            ps.setString(1, tableName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                if (!resultList.contains(rs.getString("column_name"))) {
+                    resultList.add(rs.getString("column_name"));
+                } 
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -126,14 +156,15 @@ public class PostgresSQLDBManager {
         return resultList;
     }
 
-    public static CachedRowSet getEverythingFromImageInfo() {
+    public static CachedRowSet getEntriesFromTable() {
         Statement stmt = null;
         ResultSet rs = null;
         CachedRowSet rowset = null;
 
         try {
+            final String query = ConfigurationManager.getConfigurationManager().getConfiguration().generateSQLQuery();
             stmt = ConnectionManager.getConnectionManager().getConnection().createStatement();
-            rs = stmt.executeQuery("SELECT * FROM imageinfo");
+            rs = stmt.executeQuery(query);
             rowset = new CachedRowSetImpl();
             rowset.populate(rs);
         } catch (SQLException ex) {

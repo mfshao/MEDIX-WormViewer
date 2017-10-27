@@ -1,4 +1,3 @@
-
 package wormviewer;
 
 import java.util.ArrayList;
@@ -7,12 +6,41 @@ import java.util.ArrayList;
  *
  * @author mshao1
  */
-
-
 public class Configuration {
+
     private String strainTypeId = "";
     private String tableName = "";
     private ArrayList<String> selectedColumns = new ArrayList();
+    private ArrayList<String> tableKeys = new ArrayList();
+
+    public final String generateSQLQuery() {
+        ArrayList<String> featuresList = new ArrayList();
+        featuresList.addAll(tableKeys);
+        for (String s : selectedColumns) {
+            if (!featuresList.contains(s)) {
+                featuresList.add(s);
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        if (selectedColumns.contains("*")) {
+            sb.append("SELECT * FROM ");
+        } else {
+            sb.append("SELECT ");
+            for (String s : featuresList) {
+                sb.append(s);
+                if (featuresList.indexOf(s) != (featuresList.size()-1)) {
+                    sb.append(",");
+                } else {
+                    sb.append(" ");
+                }
+            }
+            sb.append("FROM ");
+        }
+        sb.append(tableName);
+
+        return sb.toString();
+    }
 
     public String getStrainTypeId() {
         return strainTypeId;
@@ -36,5 +64,13 @@ public class Configuration {
 
     public void setSelectedColumns(ArrayList<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
+    }
+
+    public ArrayList<String> getTableKeys() {
+        return tableKeys;
+    }
+
+    public void setTableKeys(ArrayList<String> tableKeys) {
+        this.tableKeys = tableKeys;
     }
 }

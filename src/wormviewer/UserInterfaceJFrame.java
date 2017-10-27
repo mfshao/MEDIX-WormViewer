@@ -10,10 +10,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
-import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -42,6 +40,8 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
                 ConfigurationManager.getConfigurationManager().getConfiguration().setTableName(item.toString());
+                ArrayList<String> tableKeys = PostgresSQLDBManager.getAllKeysOfTable(item.toString());
+                ConfigurationManager.getConfigurationManager().getConfiguration().setTableKeys(tableKeys);
                 populateFeatureList();
             }
         }
@@ -90,15 +90,16 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         tableComboBox.setSelectedIndex(0);
         System.out.print(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
         ConfigurationManager.getConfigurationManager().getConfiguration().setTableName(tableComboBox.getSelectedItem().toString());
-
+        ArrayList<String> tableKeys = PostgresSQLDBManager.getAllKeysOfTable(tableComboBox.getSelectedItem().toString());
+        ConfigurationManager.getConfigurationManager().getConfiguration().setTableKeys(tableKeys);
         populateFeatureList();
-        FeatureSelectorList.addListSelectionListener(new FeatureSelectorListSelectionHandler());
+        featureSelectorList.addListSelectionListener(new FeatureSelectorListSelectionHandler());
     }
 
     private void populateFeatureList() {
         if (!ConfigurationManager.getConfigurationManager().getConfiguration().getStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getTableName().isEmpty()) {
             Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
-            FeatureSelectorList.setListData(columnNames);
+            featureSelectorList.setListData(columnNames);
         }
     }
 
@@ -151,7 +152,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        FeatureSelectorList = new javax.swing.JList<>();
+        featureSelectorList = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jLabel4 = new javax.swing.JLabel();
@@ -203,7 +204,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
         jLabel7.setText("Summary Display");
 
-        jScrollPane1.setViewportView(FeatureSelectorList);
+        jScrollPane1.setViewportView(featureSelectorList);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -380,7 +381,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 830, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,7 +405,10 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
     private void viewFeaturesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewFeaturesButtonActionPerformed
         // TODO add your handling code here:
-        CachedRowSet crs = PostgresSQLDBManager.getEverythingFromImageInfo();
+        System.out.println(ConfigurationManager.getConfigurationManager().getConfiguration().getStrainTypeId());
+        System.out.println(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
+        System.out.println(ConfigurationManager.getConfigurationManager().getConfiguration().getSelectedColumns());
+        CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
             JTable table = new JTable(buildTableModel(crs));
             mainScrollPane.getViewport().add(table);
@@ -449,8 +453,8 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<String> FeatureSelectorList;
     private javax.swing.JComboBox<String> datasetComboBox;
+    private javax.swing.JList<String> featureSelectorList;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
