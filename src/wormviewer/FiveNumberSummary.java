@@ -1,25 +1,29 @@
-
 package wormviewer;
 
 /**
  *
  * @author mshao1
  */
+public class FiveNumberSummary {
 
-
-public class FiveNumberSummery {
     private double median;
     private double firstQuartile;
     private double thirdQuartile;
     private double max;
     private double min;
+    private String name;
 
-    public FiveNumberSummery(double median, double firstQuartile, double thirdQuartile, double max, double min) {
+    public FiveNumberSummary(String name) {
+        this.name = name;
+    }
+
+    public FiveNumberSummary(String name, double median, double firstQuartile, double thirdQuartile, double max, double min) {
         this.median = median;
         this.firstQuartile = firstQuartile;
         this.thirdQuartile = thirdQuartile;
         this.max = max;
         this.min = min;
+        this.name = name;
     }
 
     public double getMedian() {
@@ -61,6 +65,13 @@ public class FiveNumberSummery {
     public void setMin(double min) {
         this.min = min;
     }
-    
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

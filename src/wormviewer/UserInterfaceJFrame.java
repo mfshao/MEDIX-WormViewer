@@ -5,6 +5,7 @@ import java.awt.event.ItemListener;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -48,6 +49,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
     }
 
     private class FeatureSelectorListSelectionHandler implements ListSelectionListener {
+
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
@@ -56,7 +58,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                 Object[] selected = selectionValues.toArray();
                 ArrayList<String> selectedFeatures = new ArrayList();
                 for (Object o : selected) {
-                   selectedFeatures.add(o.toString());
+                    selectedFeatures.add(o.toString());
                 }
                 ConfigurationManager.getConfigurationManager().getConfiguration().setSelectedColumns(selectedFeatures);
             }
@@ -103,12 +105,43 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         }
     }
 
-    public static DefaultTableModel buildTableModel(CachedRowSet crs) {
-        try {
-            ResultSetMetaData metaData = crs.getMetaData();
+    private static HashMap<String, ArrayList<Double>> prepareDataForFiveNumberSummary(CachedRowSet crs) {
 
+        HashMap<String, ArrayList<Double>> resultMap = new HashMap<>();
+        try {
+            crs.beforeFirst();
+            ResultSetMetaData metaData = crs.getMetaData();
             Vector<String> columnNames = new Vector<>();
             int columnCount = metaData.getColumnCount();
+
+            for (int column = 1; column <= columnCount; column++) {
+                columnNames.add(metaData.getColumnName(column));
+                if (!ConfigurationManager.getConfigurationManager().getConfiguration().getTableKeys().contains(metaData.getColumnName(column)) && !metaData.getColumnName(column).equalsIgnoreCase("IsMoving") && !metaData.getColumnName(column).equalsIgnoreCase("Resolution")) {
+                    resultMap.put(metaData.getColumnName(column), new ArrayList<>());
+                }
+            }
+
+            while (crs.next()) {
+                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                    if (resultMap.get(columnNames.get(columnIndex - 1)) != null) {
+                        resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserInterfaceJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return resultMap;
+
+    }
+
+    private static DefaultTableModel buildMainDisplayTableModel(CachedRowSet crs) {
+        try {
+            crs.beforeFirst();
+            ResultSetMetaData metaData = crs.getMetaData();
+            Vector<String> columnNames = new Vector<>();
+            int columnCount = metaData.getColumnCount();
+
             for (int column = 1; column <= columnCount; column++) {
                 columnNames.add(metaData.getColumnName(column));
             }
@@ -127,6 +160,24 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    private static DefaultTableModel buildSummaryDisplayTableModel(ArrayList<FiveNumberSummary> fnsList) {
+        Vector<String> columnNames = new Vector<>();
+        columnNames.add("");
+        for (FiveNumberSummary fns : fnsList) {
+            columnNames.add(fns.getName());
+        }
+
+        Vector<Vector<Object>> data = new Vector<>();
+        Vector<Object> vector = new Vector<>();
+        data.add(Utils.generateDataVectorFromFiveNumberSummaryList("Min", fnsList));
+        data.add(Utils.generateDataVectorFromFiveNumberSummaryList("1st Quartile", fnsList));
+        data.add(Utils.generateDataVectorFromFiveNumberSummaryList("Median", fnsList));
+        data.add(Utils.generateDataVectorFromFiveNumberSummaryList("3rd Quartile", fnsList));
+        data.add(Utils.generateDataVectorFromFiveNumberSummaryList("Max", fnsList));
+
+        return new DefaultTableModel(data, columnNames);
     }
 
     /**
@@ -149,7 +200,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        summaryScrollPane = new javax.swing.JScrollPane();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         featureSelectorList = new javax.swing.JList<>();
@@ -223,7 +274,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
+                            .addComponent(summaryScrollPane)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(245, 245, 245)))
@@ -259,7 +310,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
+                            .addComponent(summaryScrollPane)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -381,7 +432,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 830, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -410,8 +461,14 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         System.out.println(ConfigurationManager.getConfigurationManager().getConfiguration().getSelectedColumns());
         CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
-            JTable table = new JTable(buildTableModel(crs));
-            mainScrollPane.getViewport().add(table);
+            JTable mainTable = new JTable(buildMainDisplayTableModel(crs));
+            mainScrollPane.getViewport().add(mainTable);
+            HashMap<String, ArrayList<Double>> resultMap = prepareDataForFiveNumberSummary(crs);
+            System.out.println(resultMap.size());
+            ArrayList<FiveNumberSummary> fnsList = StatisticsUtils.getAllFiveNumberSummaries(resultMap);
+            
+            JTable summaryTable = new JTable(buildSummaryDisplayTableModel(fnsList));
+            summaryScrollPane.getViewport().add(summaryTable);
         }
     }//GEN-LAST:event_viewFeaturesButtonActionPerformed
 
@@ -476,10 +533,10 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JScrollPane mainScrollPane;
+    private javax.swing.JScrollPane summaryScrollPane;
     private javax.swing.JComboBox<String> tableComboBox;
     private javax.swing.JButton viewFeaturesButton;
     // End of variables declaration//GEN-END:variables
