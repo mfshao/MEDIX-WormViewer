@@ -27,7 +27,7 @@ public class StatisticsUtils {
         FiveNumberSummary result = new FiveNumberSummary(name);
         int n = toCalc.size() - 1;
 
-        if (!toCalc.isEmpty() && n != 0) {
+        if (toCalc.size() > 1) {
             Double[] numbers = toCalc.toArray(new Double[toCalc.size()]);
             Arrays.sort(numbers);
 
@@ -47,7 +47,7 @@ public class StatisticsUtils {
             } else {
                 result.setThirdQuartile(getMiddleNum(Arrays.copyOfRange(numbers, ((numbers.length) / 2) + 1, numbers.length)));
             }
-        } else {
+        } else if (!toCalc.isEmpty()) {
             result = new FiveNumberSummary(name, toCalc.get(0), toCalc.get(0), toCalc.get(0), toCalc.get(0), toCalc.get(0));
         }
         return result;
