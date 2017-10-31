@@ -100,7 +100,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
 
     private static HashMap<String, ArrayList<Double>> prepareDataForFiveNumberSummary(CachedRowSet crs) {
-
         HashMap<String, ArrayList<Double>> resultMap = new HashMap<>();
         try {
             crs.beforeFirst();
@@ -126,7 +125,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             Logger.getLogger(UserInterfaceJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         return resultMap;
-
     }
 
     private static DefaultTableModel buildMainDisplayTableModel(CachedRowSet crs) {
@@ -192,8 +190,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        downloadDatasetButton = new javax.swing.JButton();
         summaryScrollPane = new javax.swing.JScrollPane();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -217,17 +214,10 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Select Features");
 
-        jButton2.setText("View Video");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        downloadDatasetButton.setText("Download Dataset");
+        downloadDatasetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("Download Dataset");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                downloadDatasetButtonActionPerformed(evt);
             }
         });
 
@@ -248,8 +238,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                             .addComponent(datasetComboBox, 0, 150, Short.MAX_VALUE)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(tableComboBox, 0, 150, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(tableComboBox, 0, 150, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(summaryScrollPane)
@@ -261,7 +250,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(viewFeaturesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(downloadDatasetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
@@ -279,8 +268,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tableComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -294,7 +281,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(viewFeaturesButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                                .addComponent(jButton4)))))
+                                .addComponent(downloadDatasetButton)))))
                 .addContainerGap())
         );
 
@@ -342,13 +329,9 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void downloadDatasetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadDatasetButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_downloadDatasetButtonActionPerformed
 
     private void viewFeaturesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewFeaturesButtonActionPerformed
         // TODO add your handling code here:
@@ -371,9 +354,8 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> datasetComboBox;
+    private javax.swing.JButton downloadDatasetButton;
     private javax.swing.JList<String> featureSelectorList;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
