@@ -33,10 +33,10 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="datasetComboBox" max="32767" attributes="0"/>
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="tableComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="downloadDatasetButton" pref="150" max="32767" attributes="0"/>
+                          <Component id="tableComboBox" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
+                          <Component id="downloadDatasetButton" min="-2" pref="150" max="-2" attributes="0"/>
+                          <Component id="datasetComboBox" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -46,7 +46,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jScrollPane3" alignment="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="viewFeaturesButton" pref="150" max="32767" attributes="0"/>
+                          <Component id="viewFeaturesButton" min="-2" pref="150" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -82,11 +82,11 @@
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="downloadDatasetButton" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="viewFeaturesButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="downloadDatasetButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="summaryScrollPane" min="-2" pref="180" max="-2" attributes="0"/>
+                  <Component id="summaryScrollPane" min="-2" pref="188" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

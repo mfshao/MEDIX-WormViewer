@@ -16,6 +16,7 @@ public class GraphicUtils {
         if (!ConfigurationManager.getConfigurationManager().getConfiguration().getStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getTableName().isEmpty()) {
             Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
             jList.setListData(columnNames);
+            jList.setSelectedIndex(0);
         }
     }
 }
