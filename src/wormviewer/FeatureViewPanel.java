@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -81,7 +82,6 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         }
 
         Vector<Vector<Object>> data = new Vector<>();
-        Vector<Object> vector = new Vector<>();
         data.add(Utils.generateDataVectorFromFiveNumberSummaryList("Min", fnsList));
         data.add(Utils.generateDataVectorFromFiveNumberSummaryList("1st Quartile", fnsList));
         data.add(Utils.generateDataVectorFromFiveNumberSummaryList("Median", fnsList));
@@ -97,12 +97,16 @@ public class FeatureViewPanel extends javax.swing.JPanel {
             ResultSetMetaData metaData = crs.getMetaData();
             Vector<String> columnNames = new Vector<>();
             int columnCount = metaData.getColumnCount();
-
             for (int column = 1; column <= columnCount; column++) {
                 columnNames.add(metaData.getColumnName(column));
             }
 
             Vector<Vector<Object>> data = new Vector<>();
+            if (!crs.next()) {
+                JOptionPane.showMessageDialog(null, "SQL database query returned empty table.",  "Warning", JOptionPane.WARNING_MESSAGE);
+                return new DefaultTableModel(data, columnNames);
+            }
+            
             while (crs.next()) {
                 Vector<Object> vector = new Vector<>();
                 for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -143,6 +147,8 @@ public class FeatureViewPanel extends javax.swing.JPanel {
                             resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
                             }
                         } catch (NullPointerException npe) {
+                            resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
+                        } catch (NumberFormatException nfe) {
                             resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
                         }
                     }
@@ -288,14 +294,14 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
             JTable mainTable = new JTable(buildMainDisplayTableModel(crs));
-            mainTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            GraphicUtils.adjustTableColumnWidth(mainTable);
             mainScrollPane.getViewport().add(mainTable);
             HashMap<String, ArrayList<Double>> resultMap = prepareDataForFiveNumberSummary(crs);
             System.out.println(resultMap.size());
             ArrayList<FiveNumberSummary> fnsList = StatisticsUtils.getAllFiveNumberSummaries(resultMap);
 
             JTable summaryTable = new JTable(buildSummaryDisplayTableModel(fnsList));
-            summaryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            GraphicUtils.adjustTableColumnWidth(summaryTable);
             summaryScrollPane.getViewport().add(summaryTable);
         }
     }//GEN-LAST:event_viewFeaturesButtonActionPerformed
