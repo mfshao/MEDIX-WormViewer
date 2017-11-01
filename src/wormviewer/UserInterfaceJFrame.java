@@ -11,7 +11,8 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
      */
     public UserInterfaceJFrame() {
         initComponents();
-        jPanel1.add(new FeatureViewJPanel());
+        jPanel1.add(new FeatureViewPanel());
+        jPanel2.add(new DataVisualizationPanel());
     }
 
     /**
@@ -40,19 +41,8 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jPanel2.setMaximumSize(new java.awt.Dimension(820, 540));
         jPanel2.setMinimumSize(new java.awt.Dimension(820, 540));
         jPanel2.setPreferredSize(new java.awt.Dimension(820, 540));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Plots", jPanel2);
+        jPanel2.setLayout(new java.awt.BorderLayout());
+        jTabbedPane1.addTab("Data Visualization", jPanel2);
 
         jPanel3.setMaximumSize(new java.awt.Dimension(820, 540));
         jPanel3.setMinimumSize(new java.awt.Dimension(820, 540));

@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author MSHAO1
  */
-public class FeatureViewJPanel extends javax.swing.JPanel {
+public class FeatureViewPanel extends javax.swing.JPanel {
     
     private class DatasetComboBoxItemChangeListener implements ItemListener {
         @Override
@@ -65,7 +65,7 @@ public class FeatureViewJPanel extends javax.swing.JPanel {
     /**
      * Creates new form FeatureViewJPanel
      */
-    public FeatureViewJPanel() {
+    public FeatureViewPanel() {
         initComponents();
         initData();
     }
