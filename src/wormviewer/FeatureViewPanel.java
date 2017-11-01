@@ -146,9 +146,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
                             } else {
                             resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
                             }
-                        } catch (NullPointerException npe) {
-                            resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
-                        } catch (NumberFormatException nfe) {
+                        } catch (NullPointerException | NumberFormatException npe) {
                             resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
                         }
                     }
