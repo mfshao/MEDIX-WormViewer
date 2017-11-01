@@ -22,8 +22,9 @@ import javax.swing.table.DefaultTableModel;
  * @author MSHAO1
  */
 public class FeatureViewPanel extends javax.swing.JPanel {
-    
+
     private class DatasetComboBoxItemChangeListener implements ItemListener {
+
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -34,6 +35,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
     }
 
     private class TableComboBoxItemChangeListener implements ItemListener {
+
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -47,6 +49,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
     }
 
     private class FeatureSelectorListSelectionHandler implements ListSelectionListener {
+
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
@@ -69,7 +72,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         initComponents();
         initData();
     }
-    
+
     private static DefaultTableModel buildSummaryDisplayTableModel(ArrayList<FiveNumberSummary> fnsList) {
         Vector<String> columnNames = new Vector<>();
         columnNames.add("");
@@ -87,7 +90,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
 
         return new DefaultTableModel(data, columnNames);
     }
-    
+
     private static DefaultTableModel buildMainDisplayTableModel(CachedRowSet crs) {
         try {
             crs.beforeFirst();
@@ -114,7 +117,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         }
         return null;
     }
-    
+
     private static HashMap<String, ArrayList<Double>> prepareDataForFiveNumberSummary(CachedRowSet crs) {
         HashMap<String, ArrayList<Double>> resultMap = new HashMap<>();
         try {
@@ -133,7 +136,15 @@ public class FeatureViewPanel extends javax.swing.JPanel {
             while (crs.next()) {
                 for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                     if (resultMap.get(columnNames.get(columnIndex - 1)) != null) {
-                        resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
+                        try {
+                            if (crs.getObject(columnIndex).toString().equalsIgnoreCase("Inf")) {
+                                resultMap.get(columnNames.get(columnIndex - 1)).add(Double.POSITIVE_INFINITY);
+                            } else {
+                            resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
+                            }
+                        } catch (NullPointerException npe) {
+                            resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
+                        }
                     }
                 }
             }
@@ -142,7 +153,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         }
         return resultMap;
     }
-    
+
     private void initData() {
         datasetComboBox.removeAllItems();
         ArrayList<String> resultList = PostgresSQLDBManager.getAllStrainTypeIDs();
@@ -277,12 +288,14 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
             JTable mainTable = new JTable(buildMainDisplayTableModel(crs));
+            mainTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             mainScrollPane.getViewport().add(mainTable);
             HashMap<String, ArrayList<Double>> resultMap = prepareDataForFiveNumberSummary(crs);
             System.out.println(resultMap.size());
             ArrayList<FiveNumberSummary> fnsList = StatisticsUtils.getAllFiveNumberSummaries(resultMap);
-            
+
             JTable summaryTable = new JTable(buildSummaryDisplayTableModel(fnsList));
+            summaryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             summaryScrollPane.getViewport().add(summaryTable);
         }
     }//GEN-LAST:event_viewFeaturesButtonActionPerformed

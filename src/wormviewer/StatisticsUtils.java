@@ -3,6 +3,7 @@ package wormviewer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,6 +26,15 @@ public class StatisticsUtils {
 
     private static FiveNumberSummary generateFiveNumberSummary(List<Double> toCalc, String name) {
         FiveNumberSummary result = new FiveNumberSummary(name);
+
+        Iterator<Double> iter = toCalc.iterator();
+        while (iter.hasNext()) {
+            Double d = iter.next();
+            if (d.isNaN() || d.isInfinite()) {
+                iter.remove();
+            }
+        }
+
         int n = toCalc.size() - 1;
 
         if (toCalc.size() > 1) {
@@ -55,11 +65,11 @@ public class StatisticsUtils {
 
     static ArrayList<FiveNumberSummary> getAllFiveNumberSummaries(HashMap<String, ArrayList<Double>> resultMap) {
         ArrayList<FiveNumberSummary> fnsList = new ArrayList();
-        
+
         for (String s : resultMap.keySet()) {
             fnsList.add(generateFiveNumberSummary(resultMap.get(s), s));
         }
-        
+
         return fnsList;
     }
 }
