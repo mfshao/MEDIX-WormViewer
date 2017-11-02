@@ -5,6 +5,7 @@
  */
 package wormviewer;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -14,24 +15,25 @@ import java.util.Vector;
  */
 public class Utils {
     public static Vector generateDataVectorFromFiveNumberSummaryList (String label, ArrayList<FiveNumberSummary> fnsList) {
+        DecimalFormat df = new DecimalFormat("#.##");
         Vector<Object> vector = new Vector<>();
         vector.add(label);
         for (FiveNumberSummary fns : fnsList) {
             switch (label) {
                 case "Min":
-                    vector.add(fns.getMin());
+                    vector.add(df.format(fns.getMin()));
                     break;
                 case "1st Quartile":
-                    vector.add(fns.getFirstQuartile());
+                    vector.add(df.format(fns.getFirstQuartile()));
                     break;
                 case "Median":
-                    vector.add(fns.getMedian());
+                    vector.add(df.format(fns.getMedian()));
                     break;
                 case "3rd Quartile":
-                    vector.add(fns.getThirdQuartile());
+                    vector.add(df.format(fns.getThirdQuartile()));
                     break;
                 case "Max":
-                    vector.add(fns.getMax());
+                    vector.add(df.format(fns.getMax()));
                     break;
                 default:
                     break;

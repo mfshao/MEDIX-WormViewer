@@ -1,5 +1,7 @@
 package wormviewer;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.ResultSetMetaData;
@@ -103,10 +105,10 @@ public class FeatureViewPanel extends javax.swing.JPanel {
 
             Vector<Vector<Object>> data = new Vector<>();
             if (!crs.next()) {
-                JOptionPane.showMessageDialog(null, "SQL database query returned empty table.",  "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "SQL database query returned empty table.", "Warning", JOptionPane.WARNING_MESSAGE);
                 return new DefaultTableModel(data, columnNames);
             }
-            
+
             while (crs.next()) {
                 Vector<Object> vector = new Vector<>();
                 for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -144,7 +146,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
                             if (crs.getObject(columnIndex).toString().equalsIgnoreCase("Inf")) {
                                 resultMap.get(columnNames.get(columnIndex - 1)).add(Double.POSITIVE_INFINITY);
                             } else {
-                            resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
+                                resultMap.get(columnNames.get(columnIndex - 1)).add(Double.parseDouble(crs.getObject(columnIndex).toString()));
                             }
                         } catch (NullPointerException | NumberFormatException npe) {
                             resultMap.get(columnNames.get(columnIndex - 1)).add(Double.NaN);
@@ -179,8 +181,8 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         ConfigurationManager.getConfigurationManager().getConfiguration().setTableName(tableComboBox.getSelectedItem().toString());
         ArrayList<String> tableKeys = PostgresSQLDBManager.getAllKeysOfTable(tableComboBox.getSelectedItem().toString());
         ConfigurationManager.getConfigurationManager().getConfiguration().setTableKeys(tableKeys);
-        GraphicUtils.populateFeatureList(featureSelectorList);
         featureSelectorList.addListSelectionListener(new FeatureSelectorListSelectionHandler());
+        GraphicUtils.populateFeatureList(featureSelectorList);
     }
 
     /**
@@ -292,13 +294,15 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
             JTable mainTable = new JTable(buildMainDisplayTableModel(crs));
+//            mainTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             GraphicUtils.adjustTableColumnWidth(mainTable);
-            mainScrollPane.getViewport().add(mainTable);
+            
             HashMap<String, ArrayList<Double>> resultMap = prepareDataForFiveNumberSummary(crs);
             System.out.println(resultMap.size());
             ArrayList<FiveNumberSummary> fnsList = StatisticsUtils.getAllFiveNumberSummaries(resultMap);
 
             JTable summaryTable = new JTable(buildSummaryDisplayTableModel(fnsList));
+//            summaryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             GraphicUtils.adjustTableColumnWidth(summaryTable);
             summaryScrollPane.getViewport().add(summaryTable);
         }
