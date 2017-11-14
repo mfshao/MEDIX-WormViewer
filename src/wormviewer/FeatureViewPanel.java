@@ -294,16 +294,17 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         CachedRowSet crs = PostgresSQLDBManager.getEntriesFromTable();
         if (crs != null) {
             JTable mainTable = new JTable(buildMainDisplayTableModel(crs));
-//            mainTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            GraphicUtils.adjustTableColumnWidth(mainTable);
-            
+            mainTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//            GraphicUtils.adjustTableColumnWidth(mainTable
+            mainScrollPane.getViewport().add(mainTable);
+
             HashMap<String, ArrayList<Double>> resultMap = prepareDataForFiveNumberSummary(crs);
             System.out.println(resultMap.size());
             ArrayList<FiveNumberSummary> fnsList = StatisticsUtils.getAllFiveNumberSummaries(resultMap);
 
             JTable summaryTable = new JTable(buildSummaryDisplayTableModel(fnsList));
-//            summaryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            GraphicUtils.adjustTableColumnWidth(summaryTable);
+            summaryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//            GraphicUtils.adjustTableColumnWidth(summaryTable);
             summaryScrollPane.getViewport().add(summaryTable);
         }
     }//GEN-LAST:event_viewFeaturesButtonActionPerformed
