@@ -1,5 +1,7 @@
 
-package wormviewer;
+package singleton;
+
+import object.Configuration;
 
 /**
  *

@@ -1,5 +1,6 @@
-package wormviewer;
+package utils;
 
+import graphics.FiveNumberSummary;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class StatisticsUtils {
         return result;
     }
 
-    static ArrayList<FiveNumberSummary> getAllFiveNumberSummaries(HashMap<String, ArrayList<Double>> resultMap) {
+    public static ArrayList<FiveNumberSummary> getAllFiveNumberSummaries(HashMap<String, ArrayList<Double>> resultMap) {
         ArrayList<FiveNumberSummary> fnsList = new ArrayList();
 
         for (String s : resultMap.keySet()) {

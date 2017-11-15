@@ -1,6 +1,7 @@
-package wormviewer;
+package singleton;
 
 import com.sun.rowset.CachedRowSetImpl;
+import object.QueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

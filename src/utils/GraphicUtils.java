@@ -1,5 +1,7 @@
-package wormviewer;
+package utils;
 
+import singleton.ConfigurationManager;
+import singleton.PostgresSQLDBManager;
 import java.awt.Component;
 import java.util.Vector;
 import javax.swing.JList;

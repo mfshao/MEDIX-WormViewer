@@ -1,5 +1,6 @@
-package wormviewer;
+package singleton;
 
+import singleton.PostgresSQLDBManager;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

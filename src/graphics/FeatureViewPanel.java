@@ -1,7 +1,10 @@
-package wormviewer;
+package graphics;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import utils.Utils;
+import utils.GraphicUtils;
+import utils.StatisticsUtils;
+import singleton.ConfigurationManager;
+import singleton.PostgresSQLDBManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.ResultSetMetaData;

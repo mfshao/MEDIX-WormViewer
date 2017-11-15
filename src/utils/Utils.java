@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wormviewer;
+package utils;
 
+import graphics.FiveNumberSummary;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -41,5 +42,9 @@ public class Utils {
             
         }
         return vector;
+    }
+    
+    public static String convertStarinTypeIdToDatasetName(String StrainTypeId) {
+        return "";
     }
 }

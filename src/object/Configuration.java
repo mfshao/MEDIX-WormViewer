@@ -1,4 +1,4 @@
-package wormviewer;
+package object;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ public class Configuration {
     private String tableName = "";
     private ArrayList<String> selectedColumns = new ArrayList();
     private ArrayList<String> tableKeys = new ArrayList();
+    private String dppStrainTypeId = "";
 
     public final String generateSQLQuery() {
         ArrayList<String> featuresList = new ArrayList();
@@ -73,4 +74,14 @@ public class Configuration {
     public void setTableKeys(ArrayList<String> tableKeys) {
         this.tableKeys = tableKeys;
     }
+
+    public String getDppStrainTypeId() {
+        return dppStrainTypeId;
+    }
+
+    public void setDppStrainTypeId(String dppStrainTypeId) {
+        this.dppStrainTypeId = dppStrainTypeId;
+    }
+    
+    
 }

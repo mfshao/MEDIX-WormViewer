@@ -1,5 +1,5 @@
 
-package wormviewer;
+package graphics;
 
 /**
  *

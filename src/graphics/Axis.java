@@ -1,4 +1,4 @@
-package wormviewer;
+package graphics;
 
 
 import java.awt.Color;
