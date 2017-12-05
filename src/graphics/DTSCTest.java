@@ -14,7 +14,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
-import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
@@ -36,8 +35,8 @@ public class DTSCTest extends ApplicationFrame {
     public DTSCTest(final String title) {
         super(title);
         final DynamicTimeSeriesCollection dataset =
-            new DynamicTimeSeriesCollection(1, COUNT, new Millisecond());
-        dataset.setTimeBase(new Millisecond(0, 0, 0, 0, 1, 1, 2011));
+            new DynamicTimeSeriesCollection(1, COUNT, new Second());
+        dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
         dataset.addSeries(gaussianData(), 0, "Gaussian data");
         JFreeChart chart = createChart(dataset);
 
@@ -78,15 +77,18 @@ public class DTSCTest extends ApplicationFrame {
 //        btnPanel.add(combo);
         this.add(btnPanel, BorderLayout.SOUTH);
 
-        timer = new Timer(1, new ActionListener() {
+        timer = new Timer(100, new ActionListener() {
 
             float[] newData = new float[1];
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                newData[0] = randomValue();
-                dataset.advanceTime();
-                dataset.appendData(newData);
+            	dataset.advanceTime();
+            	for (int i = 0; i< 100; i++) {
+            		newData[0] = randomValue();
+            		dataset.appendData(newData);
+            	}
+
             }
         });
         
