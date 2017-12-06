@@ -13,6 +13,9 @@ public class Configuration {
     private ArrayList<String> selectedColumns = new ArrayList();
     private ArrayList<String> tableKeys = new ArrayList();
     private String dppStrainTypeId = "";
+    private String dvStrainTypeId = "";
+    private String dvTableName = "";
+    private String dvSelectedColumn = "";
 
     public final String generateSQLQuery() {
         ArrayList<String> featuresList = new ArrayList();
@@ -22,7 +25,7 @@ public class Configuration {
                 featuresList.add(s);
             }
         }
-        
+
         StringBuilder sb = new StringBuilder();
         if (selectedColumns.contains("*")) {
             sb.append("SELECT * FROM ");
@@ -30,7 +33,7 @@ public class Configuration {
             sb.append("SELECT ");
             for (String s : featuresList) {
                 sb.append(s);
-                if (featuresList.indexOf(s) != (featuresList.size()-1)) {
+                if (featuresList.indexOf(s) != (featuresList.size() - 1)) {
                     sb.append(",");
                 } else {
                     sb.append(" ");
@@ -39,6 +42,16 @@ public class Configuration {
             sb.append("FROM ");
         }
         sb.append(tableName);
+
+        return sb.toString();
+    }
+
+    public final String generateDVSQLQuery() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ");
+        sb.append(dvSelectedColumn);
+        sb.append(" FROM ");
+        sb.append(dvTableName);
 
         return sb.toString();
     }
@@ -81,6 +94,30 @@ public class Configuration {
 
     public void setDppStrainTypeId(String dppStrainTypeId) {
         this.dppStrainTypeId = dppStrainTypeId;
+    }
+
+    public String getDvStrainTypeId() {
+        return dvStrainTypeId;
+    }
+
+    public void setDvStrainTypeId(String dvStrainTypeId) {
+        this.dvStrainTypeId = dvStrainTypeId;
+    }
+
+    public String getDvTableName() {
+        return dvTableName;
+    }
+
+    public void setDvTableName(String dvTableName) {
+        this.dvTableName = dvTableName;
+    }
+
+    public String getDvSelectedColumn() {
+        return dvSelectedColumn;
+    }
+
+    public void setDvSelectedColumn(String dvSelectedColumn) {
+        this.dvSelectedColumn = dvSelectedColumn;
     }
     
     

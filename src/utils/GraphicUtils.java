@@ -4,6 +4,7 @@ import singleton.ConfigurationManager;
 import singleton.PostgresSQLDBManager;
 import java.awt.Component;
 import java.util.Vector;
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -45,6 +46,18 @@ public class GraphicUtils {
             Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
             jList.setListData(columnNames);
             jList.setSelectedIndex(0);
+        }
+    }
+
+    public static void populateFeatureComboBox(JComboBox<String> jComboBox) {
+        if (!ConfigurationManager.getConfigurationManager().getConfiguration().getDvStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getDvTableName().isEmpty()) {
+            Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getDvTableName());
+            for (String s : columnNames) {
+                if (!s.equals("*")) {
+                    jComboBox.addItem(s);
+                }
+            }
+            jComboBox.setSelectedIndex(0);
         }
     }
 }

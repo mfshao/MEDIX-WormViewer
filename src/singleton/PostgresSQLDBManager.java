@@ -184,4 +184,33 @@ public class PostgresSQLDBManager {
         }
         return rowset;
     }
+    
+    public static ArrayList<Float> getDVEntriesFromTable() {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Float> resultList = new ArrayList();
+
+        try {
+            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_ALL_STRAINTYPEIDS);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+//                resultList.add(rs.getString("straintypeid"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resultList;
+    }
 }

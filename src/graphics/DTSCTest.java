@@ -1,11 +1,8 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
+package graphics;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import org.jfree.chart.ChartFactory;
@@ -16,13 +13,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
 import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
-/** @see http://stackoverflow.com/questions/5048852 */
-public class DTSCTest extends ApplicationFrame {
+public class DTSCTest extends JPanel {
 
-    private static final String TITLE = "Dynamic Series";
     private static final String START = "Start";
     private static final String STOP = "Stop";
     private static final float MINMAX = 100;
@@ -32,50 +25,14 @@ public class DTSCTest extends ApplicationFrame {
     private static final Random random = new Random();
     private Timer timer;
 
-    public DTSCTest(final String title) {
-        super(title);
-        final DynamicTimeSeriesCollection dataset =
-            new DynamicTimeSeriesCollection(1, COUNT, new Second());
+    public DTSCTest() {
+        final DynamicTimeSeriesCollection dataset
+                = new DynamicTimeSeriesCollection(1, COUNT, new Second());
         dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
         dataset.addSeries(gaussianData(), 0, "Gaussian data");
         JFreeChart chart = createChart(dataset);
-
-        final JButton run = new JButton(STOP);
-        run.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String cmd = e.getActionCommand();
-                if (STOP.equals(cmd)) {
-                    timer.stop();
-                    run.setText(START);
-                } else {
-                    timer.start();
-                    run.setText(STOP);
-                }
-            }
-        });
-
-//        final JComboBox combo = new JComboBox();
-//        combo.addItem("Fast");
-//        combo.addItem("Slow");
-//        combo.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if ("Fast".equals(combo.getSelectedItem())) {
-//                    timer.setDelay(FAST);
-//                } else {
-//                    timer.setDelay(SLOW);
-//                }
-//            }
-//        });
-
-        this.add(new ChartPanel(chart), BorderLayout.CENTER);
-        JPanel btnPanel = new JPanel(new FlowLayout());
-        btnPanel.add(run);
-//        btnPanel.add(combo);
-        this.add(btnPanel, BorderLayout.SOUTH);
+        ChartPanel cp = new ChartPanel(chart);
+        this.add(new ChartPanel(chart));
 
         timer = new Timer(100, new ActionListener() {
 
@@ -83,20 +40,20 @@ public class DTSCTest extends ApplicationFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-            	dataset.advanceTime();
-            	for (int i = 0; i< 100; i++) {
-            		newData[0] = randomValue();
-            		dataset.appendData(newData);
-            	}
+                dataset.advanceTime();
+                for (int i = 0; i < 100; i++) {
+                    newData[0] = randomValue();
+                    dataset.appendData(newData);
+                }
 
             }
         });
-        
+
         float[] initData = new float[1];
-        for (int i = 0; i < COUNT; i ++) {
-        	initData[0] = randomValue();
+        for (int i = 0; i < COUNT; i++) {
+            initData[0] = randomValue();
             dataset.appendData(initData);
-    	}
+        }
     }
 
     private float randomValue() {
@@ -113,7 +70,7 @@ public class DTSCTest extends ApplicationFrame {
 
     private JFreeChart createChart(final XYDataset dataset) {
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
-            TITLE, "hh:mm:ss", "milliVolts", dataset, true, true, false);
+                "", "hh:mm:ss", "milliVolts", dataset, true, true, false);
         final XYPlot plot = result.getXYPlot();
         ValueAxis domain = plot.getDomainAxis();
         domain.setAutoRange(true);
@@ -124,23 +81,5 @@ public class DTSCTest extends ApplicationFrame {
 
     public void start() {
         timer.start();
-    }
-
-
-    public static void main(final String[] args) {
-    	DTSCTest demo = new DTSCTest(TITLE);
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
-//        EventQueue.invokeLater(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                DTSCTest demo = new DTSCTest(TITLE);
-//                demo.pack();
-//                RefineryUtilities.centerFrameOnScreen(demo);
-//                demo.setVisible(true);
-//            }
-//        });
     }
 }
