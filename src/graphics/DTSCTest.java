@@ -29,10 +29,10 @@ public class DTSCTest extends JPanel {
         final DynamicTimeSeriesCollection dataset
                 = new DynamicTimeSeriesCollection(1, COUNT, new Second());
         dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
-        dataset.addSeries(gaussianData(), 0, "Gaussian data");
+        dataset.addSeries(gaussianData(), 0, "Data");
         JFreeChart chart = createChart(dataset);
-        ChartPanel cp = new ChartPanel(chart);
-        this.add(new ChartPanel(chart));
+        ChartPanel cp = new ChartPanel(chart, 464, 188, 464, 188, 464, 188, true, false, false, false, false, false);
+        this.add(cp);
 
         timer = new Timer(100, new ActionListener() {
 
@@ -49,11 +49,6 @@ public class DTSCTest extends JPanel {
             }
         });
 
-        float[] initData = new float[1];
-        for (int i = 0; i < COUNT; i++) {
-            initData[0] = randomValue();
-            dataset.appendData(initData);
-        }
     }
 
     private float randomValue() {
@@ -62,15 +57,15 @@ public class DTSCTest extends JPanel {
 
     private float[] gaussianData() {
         float[] a = new float[COUNT];
-        for (int i = 0; i < a.length; i++) {
-            a[i] = randomValue();
-        }
+//        for (int i = 0; i < a.length; i++) {
+//            a[i] = randomValue();
+//        }
         return a;
     }
 
     private JFreeChart createChart(final XYDataset dataset) {
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
-                "", "hh:mm:ss", "milliVolts", dataset, true, true, false);
+                "", "hh:mm:ss", "dataRange", dataset, true, true, false);
         final XYPlot plot = result.getXYPlot();
         ValueAxis domain = plot.getDomainAxis();
         domain.setAutoRange(true);

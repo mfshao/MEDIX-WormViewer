@@ -20,7 +20,7 @@ public class DrawGraph extends JPanel {
 
     private static final int MAX_SCORE = 20;
     private static final int PREF_W = 800;
-    private static final int PREF_H = 650;
+    private static final int PREF_H = 100;
     private static final int BORDER_GAP = 0;
     private static final Color GRAPH_COLOR = Color.green;
     private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
