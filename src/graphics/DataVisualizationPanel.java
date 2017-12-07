@@ -158,12 +158,10 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         jScrollPane2.setMaximumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setMinimumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setPreferredSize(new java.awt.Dimension(390, 300));
-        jScrollPane2.setSize(new java.awt.Dimension(390, 300));
 
         playVideoPanel.setMaximumSize(new java.awt.Dimension(400, 300));
         playVideoPanel.setMinimumSize(new java.awt.Dimension(400, 300));
         playVideoPanel.setPreferredSize(new java.awt.Dimension(400, 300));
-        playVideoPanel.setSize(new java.awt.Dimension(400, 300));
 
         javax.swing.GroupLayout playVideoPanelLayout = new javax.swing.GroupLayout(playVideoPanel);
         playVideoPanel.setLayout(playVideoPanelLayout);
@@ -186,7 +184,7 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(playVideoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(featureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)

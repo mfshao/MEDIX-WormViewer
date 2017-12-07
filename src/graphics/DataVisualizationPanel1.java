@@ -1,10 +1,13 @@
 
 package graphics;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import singleton.ConfigurationManager;
 import singleton.PostgresSQLDBManager;
 import utils.GraphicUtils;
@@ -56,6 +59,16 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
     public DataVisualizationPanel1() {
         initComponents();
         initData();
+        timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int currentScrollVal = scrollDemo1.getPictureScrollPane().getHorizontalScrollBar().getValue();
+                if (currentScrollVal < 100) {
+                    currentScrollVal++;
+                    scrollDemo1.getPictureScrollPane().getHorizontalScrollBar().setValue(currentScrollVal);
+                }
+            }
+        });
     }
     
     private void initData() {
@@ -80,6 +93,8 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         GraphicUtils.populateFeatureComboBox(featureComboBox);
         featureComboBox.addItemListener(new FeatureComboBoxItemChangeListener());
         featureComboBox.setSelectedIndex(0);
+        
+        
     }
 
     /**
@@ -153,12 +168,10 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         jScrollPane2.setMaximumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setMinimumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setPreferredSize(new java.awt.Dimension(390, 300));
-        jScrollPane2.setSize(new java.awt.Dimension(390, 300));
 
         playVideoPanel.setMaximumSize(new java.awt.Dimension(400, 300));
         playVideoPanel.setMinimumSize(new java.awt.Dimension(400, 300));
         playVideoPanel.setPreferredSize(new java.awt.Dimension(400, 300));
-        playVideoPanel.setSize(new java.awt.Dimension(400, 300));
 
         javax.swing.GroupLayout playVideoPanelLayout = new javax.swing.GroupLayout(playVideoPanel);
         playVideoPanel.setLayout(playVideoPanelLayout);
@@ -181,7 +194,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(playVideoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(featureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,7 +209,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
                                 .addComponent(jLabel3)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(timelinePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                                .addComponent(timelinePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
@@ -232,6 +245,11 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
         // TODO add your handling code here:
+        if (timer.isRunning()){
+            timer.stop();
+        } else {
+            timer.start();
+        }
     }//GEN-LAST:event_playButtonActionPerformed
 
 
@@ -249,4 +267,5 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> tableComboBox;
     private javax.swing.JPanel timelinePanel;
     // End of variables declaration//GEN-END:variables
+private Timer timer; 
 }

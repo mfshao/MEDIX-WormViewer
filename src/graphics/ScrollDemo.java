@@ -13,6 +13,7 @@ public class ScrollDemo extends JPanel {
 
     private Axis columnView;
     private Axis rowView;
+    private JScrollPane pictureScrollPane;
 
     public ScrollDemo() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -53,7 +54,7 @@ public class ScrollDemo extends JPanel {
         //Set up the scroll pane.
 //        picture = new ScrollablePicture(bee, columnView.getIncrement());
 //        picture = new ScrollablePicture(new ImageIcon(awtImage), columnView.getIncrement());
-        JScrollPane pictureScrollPane = new JScrollPane(mainPanel);
+        pictureScrollPane = new JScrollPane(mainPanel);
         pictureScrollPane.setPreferredSize(new Dimension(464, 188));
         pictureScrollPane.setViewportBorder(
                 BorderFactory.createLineBorder(Color.black));
@@ -76,4 +77,9 @@ public class ScrollDemo extends JPanel {
         add(pictureScrollPane);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
+
+    public JScrollPane getPictureScrollPane() {
+        return pictureScrollPane;
+    }
+    
 }
