@@ -310,6 +310,7 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         datasetComboBox.setEnabled(true);
         featureComboBox.setEnabled(true);
         tableComboBox.setEnabled(true);
+        dataDisplayTextArea.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

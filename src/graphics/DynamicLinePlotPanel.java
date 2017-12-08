@@ -65,6 +65,7 @@ public class DynamicLinePlotPanel extends JPanel {
             
             if (!dvDatasetItr.hasNext()) {
                     timer.stop();
+                    textArea.setText(textArea.getText() + "\nVideo playback finished!");
             }
         }
     }
