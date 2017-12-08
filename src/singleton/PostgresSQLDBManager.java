@@ -11,6 +11,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
+import object.DVDataset;
 
 /**
  *
@@ -23,7 +24,7 @@ public class PostgresSQLDBManager {
     private final static String GET_ALL_STRAINTYPEIDS = "SELECT straintypeid FROM straintype";
     private final static String GET_ALL_TABLE_NAMES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public'";
     private final static String GET_KEYS_FROM_TABLE = "SELECT constraint_name, column_name FROM information_schema.key_column_usage WHERE table_name = ?;";
-    
+
     static {
         postgresSQLDBManager = new PostgresSQLDBManager();
     }
@@ -47,9 +48,9 @@ public class PostgresSQLDBManager {
             int columnCount = rs.getMetaData().getColumnCount();
             resultList.add("*");
             for (int column = 1; column <= columnCount; column++) {
-                if(!ConfigurationManager.getConfigurationManager().getConfiguration().getTableKeys().contains(rs.getMetaData().getColumnName(column))) {
+                if (!ConfigurationManager.getConfigurationManager().getConfiguration().getTableKeys().contains(rs.getMetaData().getColumnName(column))) {
                     resultList.add(rs.getMetaData().getColumnName(column));
-                } 
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -67,7 +68,7 @@ public class PostgresSQLDBManager {
         }
         return resultList;
     }
-    
+
     public static ArrayList<String> getAllKeysOfTable(String tableName) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -80,7 +81,7 @@ public class PostgresSQLDBManager {
             while (rs.next()) {
                 if (!resultList.contains(rs.getString("column_name"))) {
                     resultList.add(rs.getString("column_name"));
-                } 
+                }
             }
 
         } catch (SQLException ex) {
@@ -184,19 +185,39 @@ public class PostgresSQLDBManager {
         }
         return rowset;
     }
-    
-    public static ArrayList<Float> getDVEntriesFromTable() {
-        PreparedStatement ps = null;
+
+    public static DVDataset getDVEntriesFromTable() {
+        Statement stmt = null;
         ResultSet rs = null;
+        float max = Float.MIN_VALUE;
+        float min = Float.MAX_VALUE;
+        String title = "";
         ArrayList<Float> resultList = new ArrayList();
 
         try {
-            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_ALL_STRAINTYPEIDS);
-            rs = ps.executeQuery();
+            final String query = ConfigurationManager.getConfigurationManager().getDVConfiguration().generateDVSQLQuery();
+            title = ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvSelectedColumn();
+            stmt = ConnectionManager.getConnectionManager().getConnection().createStatement();
+            rs = stmt.executeQuery(query);
             while (rs.next()) {
-//                resultList.add(rs.getString("straintypeid"));
+                String strValue = rs.getString(1);
+                if (strValue != null) {
+                    try {
+                        Float floatValue = Float.parseFloat(strValue);
+                        if (floatValue > max) {
+                            max = floatValue;
+                        }
+                        if (floatValue < min) {
+                            min = floatValue;
+                        }
+                        resultList.add(floatValue);
+                    } catch (NumberFormatException nfe) {
+                        resultList.add(Float.NaN);
+                    }
+                } else {
+                    resultList.add(Float.NaN);
+                }
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -204,13 +225,14 @@ public class PostgresSQLDBManager {
                 if (rs != null) {
                     rs.close();
                 }
-                if (ps != null) {
-                    ps.close();
+                if (stmt != null) {
+                    stmt.close();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return resultList;
+
+        return new DVDataset(min, max, resultList, title);
     }
 }

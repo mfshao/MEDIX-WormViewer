@@ -50,8 +50,9 @@ public class GraphicUtils {
     }
 
     public static void populateFeatureComboBox(JComboBox<String> jComboBox) {
-        if (!ConfigurationManager.getConfigurationManager().getConfiguration().getDvStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getConfiguration().getDvTableName().isEmpty()) {
-            Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getConfiguration().getDvTableName());
+        if (!ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvStrainTypeId().isEmpty() && !ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvTableName().isEmpty()) {
+            Vector<String> columnNames = PostgresSQLDBManager.getAllTableColumnLabels(ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvTableName());
+            jComboBox.removeAllItems();
             for (String s : columnNames) {
                 if (!s.equals("*")) {
                     jComboBox.addItem(s);

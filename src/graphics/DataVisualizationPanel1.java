@@ -26,7 +26,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvStrainTypeId(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvStrainTypeId(item.toString());
             }
         }
     }
@@ -37,7 +37,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvTableName(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableName(item.toString());
             }
         }
     }
@@ -48,7 +48,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvSelectedColumn(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvSelectedColumn(item.toString());
             }
         }
     }
@@ -79,7 +79,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         }
         datasetComboBox.addItemListener(new DatasetComboBoxItemChangeListener());
         datasetComboBox.setSelectedIndex(0);
-        ConfigurationManager.getConfigurationManager().getConfiguration().setDvStrainTypeId(datasetComboBox.getSelectedItem().toString());
+        ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvStrainTypeId(datasetComboBox.getSelectedItem().toString());
 
         tableComboBox.removeAllItems();
         resultList = PostgresSQLDBManager.getAllTableNames();
@@ -89,7 +89,7 @@ public class DataVisualizationPanel1 extends javax.swing.JPanel {
         tableComboBox.addItemListener(new TableComboBoxItemChangeListener());
         tableComboBox.setSelectedIndex(0);
 //        System.out.print(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
-        ConfigurationManager.getConfigurationManager().getConfiguration().setDvTableName(tableComboBox.getSelectedItem().toString());
+        ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableName(tableComboBox.getSelectedItem().toString());
         GraphicUtils.populateFeatureComboBox(featureComboBox);
         featureComboBox.addItemListener(new FeatureComboBoxItemChangeListener());
         featureComboBox.setSelectedIndex(0);

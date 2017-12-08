@@ -1,10 +1,13 @@
-
 package graphics;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import object.DVDataset;
 import singleton.ConfigurationManager;
 import singleton.PostgresSQLDBManager;
 import utils.GraphicUtils;
@@ -13,39 +16,38 @@ import utils.GraphicUtils;
  *
  * @author MSHAO1
  */
-
-
 public class DataVisualizationPanel extends javax.swing.JPanel {
-    
+
     private class DatasetComboBoxItemChangeListener implements ItemListener {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvStrainTypeId(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvStrainTypeId(item.toString());
             }
         }
     }
-    
+
     private class TableComboBoxItemChangeListener implements ItemListener {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvTableName(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableName(item.toString());
+                GraphicUtils.populateFeatureComboBox(featureComboBox);
             }
         }
     }
-    
+
     private class FeatureComboBoxItemChangeListener implements ItemListener {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDvSelectedColumn(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvSelectedColumn(item.toString());
             }
         }
     }
@@ -56,8 +58,10 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
     public DataVisualizationPanel() {
         initComponents();
         initData();
+        
+        counter = 0;
     }
-    
+
     private void initData() {
         datasetComboBox.removeAllItems();
         ArrayList<String> resultList = PostgresSQLDBManager.getAllStrainTypeIDs();
@@ -66,7 +70,7 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         }
         datasetComboBox.addItemListener(new DatasetComboBoxItemChangeListener());
         datasetComboBox.setSelectedIndex(0);
-        ConfigurationManager.getConfigurationManager().getConfiguration().setDvStrainTypeId(datasetComboBox.getSelectedItem().toString());
+        ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvStrainTypeId(datasetComboBox.getSelectedItem().toString());
 
         tableComboBox.removeAllItems();
         resultList = PostgresSQLDBManager.getAllTableNames();
@@ -76,10 +80,11 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         tableComboBox.addItemListener(new TableComboBoxItemChangeListener());
         tableComboBox.setSelectedIndex(0);
 //        System.out.print(ConfigurationManager.getConfigurationManager().getConfiguration().getTableName());
-        ConfigurationManager.getConfigurationManager().getConfiguration().setDvTableName(tableComboBox.getSelectedItem().toString());
+        ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableName(tableComboBox.getSelectedItem().toString());
         GraphicUtils.populateFeatureComboBox(featureComboBox);
         featureComboBox.addItemListener(new FeatureComboBoxItemChangeListener());
         featureComboBox.setSelectedIndex(0);
+        ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvSelectedColumn(featureComboBox.getSelectedItem().toString());
     }
 
     /**
@@ -99,10 +104,12 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         featureComboBox = new javax.swing.JComboBox<>();
         timelinePanel = new JPanel();
-        dTSCTest1 = new graphics.DTSCTest();
         playButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
+        dataDisplayTextArea = new javax.swing.JTextArea();
         playVideoPanel = new javax.swing.JPanel();
+        resetButton = new javax.swing.JButton();
+        pauseButton = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(820, 540));
         setMinimumSize(new java.awt.Dimension(820, 540));
@@ -116,35 +123,13 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Select Feature");
 
+        timelinePanel.setBackground(new java.awt.Color(255, 255, 255));
         timelinePanel.setMaximumSize(new java.awt.Dimension(464, 188));
         timelinePanel.setMinimumSize(new java.awt.Dimension(464, 188));
+        timelinePanel.setPreferredSize(new java.awt.Dimension(464, 188));
+        timelinePanel.setLayout(new java.awt.BorderLayout());
 
-        dTSCTest1.setMaximumSize(new java.awt.Dimension(464, 188));
-        dTSCTest1.setMinimumSize(new java.awt.Dimension(464, 188));
-        dTSCTest1.setPreferredSize(new java.awt.Dimension(464, 188));
-
-        javax.swing.GroupLayout timelinePanelLayout = new javax.swing.GroupLayout(timelinePanel);
-        timelinePanel.setLayout(timelinePanelLayout);
-        timelinePanelLayout.setHorizontalGroup(
-            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(timelinePanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(dTSCTest1, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
-        timelinePanelLayout.setVerticalGroup(
-            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 442, Short.MAX_VALUE)
-            .addGroup(timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(timelinePanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(dTSCTest1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        playButton.setText("Play Video");
+        playButton.setText("Play");
         playButton.setMaximumSize(new java.awt.Dimension(130, 29));
         playButton.setMinimumSize(new java.awt.Dimension(130, 29));
         playButton.setPreferredSize(new java.awt.Dimension(130, 29));
@@ -158,6 +143,10 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         jScrollPane2.setMaximumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setMinimumSize(new java.awt.Dimension(390, 300));
         jScrollPane2.setPreferredSize(new java.awt.Dimension(390, 300));
+
+        dataDisplayTextArea.setColumns(20);
+        dataDisplayTextArea.setRows(5);
+        jScrollPane2.setViewportView(dataDisplayTextArea);
 
         playVideoPanel.setMaximumSize(new java.awt.Dimension(400, 300));
         playVideoPanel.setMinimumSize(new java.awt.Dimension(400, 300));
@@ -173,6 +162,28 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
             playVideoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
+
+        resetButton.setText("Reset");
+        resetButton.setEnabled(false);
+        resetButton.setMaximumSize(new java.awt.Dimension(130, 29));
+        resetButton.setMinimumSize(new java.awt.Dimension(130, 29));
+        resetButton.setPreferredSize(new java.awt.Dimension(130, 29));
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
+        pauseButton.setText("Pause");
+        pauseButton.setEnabled(false);
+        pauseButton.setMaximumSize(new java.awt.Dimension(130, 29));
+        pauseButton.setMinimumSize(new java.awt.Dimension(130, 29));
+        pauseButton.setSize(new java.awt.Dimension(130, 29));
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauseButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -198,10 +209,14 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(timelinePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(timelinePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(playButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -222,11 +237,15 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tableComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tableComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(23, 23, 23)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(featureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(featureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(timelinePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -234,13 +253,67 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
-        // TODO add your handling code here:
-        dTSCTest1.start();
+        // TODO add your handling code here:         
+        dataset = PostgresSQLDBManager.getDVEntriesFromTable();
+
+        timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        timelinePlotPanel = new graphics.DynamicLinePlotPanel(timer, dataset, dataDisplayTextArea);
+        timelinePlotPanel.setMaximumSize(new java.awt.Dimension(464, 188));
+        timelinePlotPanel.setMinimumSize(new java.awt.Dimension(464, 188));
+        timelinePlotPanel.setPreferredSize(new java.awt.Dimension(464, 188));
+        timelinePanel.add(timelinePlotPanel, java.awt.BorderLayout.CENTER);
+        super.revalidate();
+
+        timer.start();
+        pauseButton.setEnabled(true);
+        resetButton.setEnabled(true);
+        playButton.setEnabled(false);
+        datasetComboBox.setEnabled(false);
+        featureComboBox.setEnabled(false);
+        tableComboBox.setEnabled(false);
     }//GEN-LAST:event_playButtonActionPerformed
 
+    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
+        // TODO add your handling code here:
+        if (timer.isRunning()) {
+            timer.stop();
+            pauseButton.setText("Continue");
+        } else {
+            timer.start();
+            pauseButton.setText("Pause");
+        }
+    }//GEN-LAST:event_pauseButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        // TODO add your handling code here:
+        resetControls();
+    }//GEN-LAST:event_resetButtonActionPerformed
+
+    private void resetControls() {
+        timer.stop();
+        timer = null;
+        timelinePanel.remove(timelinePlotPanel);
+        timelinePlotPanel = null;
+        counter = 0;
+        dataset = null;
+        super.revalidate();
+
+        pauseButton.setText("Pause");
+        pauseButton.setEnabled(false);
+        resetButton.setEnabled(false);
+        playButton.setEnabled(true);
+        datasetComboBox.setEnabled(true);
+        featureComboBox.setEnabled(true);
+        tableComboBox.setEnabled(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private graphics.DTSCTest dTSCTest1;
+    private javax.swing.JTextArea dataDisplayTextArea;
     private javax.swing.JComboBox<String> datasetComboBox;
     private javax.swing.JComboBox<String> featureComboBox;
     private javax.swing.JLabel jLabel1;
@@ -248,9 +321,15 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton pauseButton;
     private javax.swing.JButton playButton;
     private javax.swing.JPanel playVideoPanel;
+    private javax.swing.JButton resetButton;
     private javax.swing.JComboBox<String> tableComboBox;
     private javax.swing.JPanel timelinePanel;
     // End of variables declaration//GEN-END:variables
+private DynamicLinePlotPanel timelinePlotPanel;
+    private Timer timer;
+    private DVDataset dataset;
+    private int counter;
 }

@@ -12,10 +12,6 @@ public class Configuration {
     private String tableName = "";
     private ArrayList<String> selectedColumns = new ArrayList();
     private ArrayList<String> tableKeys = new ArrayList();
-    private String dppStrainTypeId = "";
-    private String dvStrainTypeId = "";
-    private String dvTableName = "";
-    private String dvSelectedColumn = "";
 
     public final String generateSQLQuery() {
         ArrayList<String> featuresList = new ArrayList();
@@ -42,16 +38,6 @@ public class Configuration {
             sb.append("FROM ");
         }
         sb.append(tableName);
-
-        return sb.toString();
-    }
-
-    public final String generateDVSQLQuery() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ");
-        sb.append(dvSelectedColumn);
-        sb.append(" FROM ");
-        sb.append(dvTableName);
 
         return sb.toString();
     }
@@ -88,37 +74,4 @@ public class Configuration {
         this.tableKeys = tableKeys;
     }
 
-    public String getDppStrainTypeId() {
-        return dppStrainTypeId;
-    }
-
-    public void setDppStrainTypeId(String dppStrainTypeId) {
-        this.dppStrainTypeId = dppStrainTypeId;
-    }
-
-    public String getDvStrainTypeId() {
-        return dvStrainTypeId;
-    }
-
-    public void setDvStrainTypeId(String dvStrainTypeId) {
-        this.dvStrainTypeId = dvStrainTypeId;
-    }
-
-    public String getDvTableName() {
-        return dvTableName;
-    }
-
-    public void setDvTableName(String dvTableName) {
-        this.dvTableName = dvTableName;
-    }
-
-    public String getDvSelectedColumn() {
-        return dvSelectedColumn;
-    }
-
-    public void setDvSelectedColumn(String dvSelectedColumn) {
-        this.dvSelectedColumn = dvSelectedColumn;
-    }
-    
-    
 }

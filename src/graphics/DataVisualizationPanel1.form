@@ -51,7 +51,7 @@
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="timelinePanel" pref="500" max="32767" attributes="0"/>
+                              <Component id="timelinePanel" pref="498" max="32767" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="playButton" min="-2" max="-2" attributes="0"/>
                           </Group>

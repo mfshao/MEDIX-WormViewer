@@ -18,8 +18,6 @@ public class ScrollDemo extends JPanel {
     public ScrollDemo() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-        //Get the image to use.
-//        ImageIcon bee = createImageIcon("/images/flyingBee.jpg");
         java.util.List<Integer> scores = new ArrayList<Integer>();
         Random random = new Random();
         int maxDataPoints = 16;

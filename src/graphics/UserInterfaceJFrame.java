@@ -13,7 +13,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         initComponents();
         jPanel1.add(new FeatureViewPanel());
         jPanel2.add(new DataVisualizationPanel());
-        jPanel4.add(new DataVisualizationPanel1());
     }
 
     /**
@@ -29,7 +28,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -63,11 +61,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Data Parser", jPanel3);
 
-        jPanel4.setMaximumSize(new java.awt.Dimension(820, 540));
-        jPanel4.setSize(new java.awt.Dimension(820, 540));
-        jPanel4.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("tab4", jPanel4);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,7 +83,6 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

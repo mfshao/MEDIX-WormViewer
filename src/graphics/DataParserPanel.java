@@ -20,7 +20,7 @@ public class DataParserPanel extends javax.swing.JPanel {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
-                ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(item.toString());
+//                ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(item.toString());
             }
         }
     }
@@ -40,7 +40,7 @@ public class DataParserPanel extends javax.swing.JPanel {
         }
         dppDatasetComboBox.addItemListener(new DatasetComboBoxItemChangeListener());
         dppDatasetComboBox.setSelectedIndex(0);
-        ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(dppDatasetComboBox.getSelectedItem().toString());
+//        ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(dppDatasetComboBox.getSelectedItem().toString());
     }
 
     /**
