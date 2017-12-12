@@ -230,6 +230,7 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         });
 
         downloadDatasetButton.setText("Download Dataset");
+        downloadDatasetButton.setEnabled(false);
 
         jLabel4.setText("Summary Display");
 

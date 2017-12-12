@@ -167,6 +167,7 @@
     <Component class="javax.swing.JButton" name="downloadDatasetButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Download Dataset"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
