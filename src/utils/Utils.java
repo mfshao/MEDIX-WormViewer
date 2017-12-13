@@ -87,8 +87,9 @@ public class Utils {
     public static LinkedList<String> loadImagePathByStrainTypeId (String StrainTypeId, int offset){
         LinkedList<String> imagePathList = new LinkedList<>();
         String dataSetName = convertStarinTypeIdToDatasetName(StrainTypeId);
-        String inputPath = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\input";
+        String inputPath = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\input\\";
         inputPath = inputPath.replace("*****", dataSetName);
+        System.out.println(inputPath);
         File inputDir = new File(inputPath);
         int counter = 0;
         
