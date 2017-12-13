@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -192,7 +193,7 @@ public class PostgresSQLDBManager {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
         String title = "";
-        ArrayList<Float> resultList = new ArrayList();
+        LinkedList<Float> resultList = new LinkedList<>();
 
         try {
             final String query = ConfigurationManager.getConfigurationManager().getDVConfiguration().generateDVSQLQuery();

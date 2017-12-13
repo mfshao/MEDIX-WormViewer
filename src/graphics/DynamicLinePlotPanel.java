@@ -1,9 +1,11 @@
 package graphics;
 
+import static graphics.DataVisualizationPanel.TIMER_INTERVAL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -15,13 +17,13 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
+import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 
 public class DynamicLinePlotPanel extends JPanel {
 
-    private static final float MINMAX = 100;
-    private static final int COUNT = 2 * 60;
+    private static final int COUNT = 2 * 1000;
     private static final Random random = new Random();
     private final DVDataset dvDataset;
     private Timer timer;
@@ -34,8 +36,8 @@ public class DynamicLinePlotPanel extends JPanel {
         this.timer = timer;
         this.textArea = textArea;
         currentFrame = dvDataset.getFrameOffset();
-        dataset = new DynamicTimeSeriesCollection(1, COUNT, new Second());
-        dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
+        dataset = new DynamicTimeSeriesCollection(1, COUNT, new Millisecond());
+        dataset.setTimeBase(new Millisecond(0, 0, 0, 0, 1, 1, 2011));
         dataset.addSeries(initData(), 0, dvDataset.getTitle());
         JFreeChart chart = createChart(dataset);
         ChartPanel cp = new ChartPanel(chart, 464, 188, 464, 188, 464, 188, true, false, false, false, false, false);
@@ -47,25 +49,28 @@ public class DynamicLinePlotPanel extends JPanel {
 
     private class onTimerChangeActionListener implements ActionListener {
 
-        final Iterator<Float> dvDatasetItr = dvDataset.getDataList().iterator();
+        final LinkedList<Float> dvDatasetList = dvDataset.getDataList();
         float[] newData = new float[1];
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            dataset.advanceTime();
-            for (int i = 0; i < 100; i++) {
-                if (!dvDatasetItr.hasNext()) {
-                    break;
-                }
-                newData[0] = dvDatasetItr.next();
-                dataset.appendData(newData);
-                currentFrame++;
-            }
+//            dataset.advanceTime();
+            currentFrame++;
+            newData[0] = dvDatasetList.pop();
+            dataset.appendData(newData);
             textArea.setText("Current Frame: " + currentFrame + "\n" + dvDataset.getTitle() + ": " + newData[0] + "\nMIn = " + dvDataset.getMin() + "\nMax = " + dvDataset.getMax());
-            
-            if (!dvDatasetItr.hasNext()) {
-                    timer.stop();
-                    textArea.setText(textArea.getText() + "\nVideo playback finished!");
+
+            if (dvDatasetList.peek() == null) {
+                timer.stop();
+                textArea.setText(textArea.getText() + "\nVideo playback finished!");
+            } else {
+                float nextData = dvDatasetList.peek();
+                float dataStep = (nextData - newData[0]) / TIMER_INTERVAL;
+                for (int i = 0; i < TIMER_INTERVAL; i++) {
+                    dataset.advanceTime();
+                    newData[0] += i * dataStep;
+                    dataset.appendData(newData);
+                }
             }
         }
     }
@@ -77,7 +82,7 @@ public class DynamicLinePlotPanel extends JPanel {
 
     private JFreeChart createChart(final XYDataset dataset) {
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
-                "", "hh:mm:ss", dvDataset.getTitle(), dataset, false, false, false);
+                "", "", dvDataset.getTitle(), dataset, false, false, false);
         final XYPlot plot = result.getXYPlot();
         ValueAxis domain = plot.getDomainAxis();
         domain.setAutoRange(true);
