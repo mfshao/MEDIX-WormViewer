@@ -1,10 +1,20 @@
 package graphics;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import object.DVDataset;
@@ -255,10 +265,22 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
         // TODO add your handling code here:         
         dataset = PostgresSQLDBManager.getDVEntriesFromTable();
-
+        imagePathList = utils.Utils.loadImagePathByStrainTypeId(ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvStrainTypeId(), 7);      
+        
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (imagePathList != null && !imagePathList.isEmpty()){
+                    BufferedImage img = null;
+                    try {
+                        img = ImageIO.read(new File(imagePathList.pop()));
+                        JLabel picLabel = new JLabel(new ImageIcon(img));
+                        playVideoPanel.add(picLabel);
+                        playVideoPanel.revalidate();
+                    } catch (IOException ex) {
+                        Logger.getLogger(DataVisualizationPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         });
 
@@ -276,6 +298,8 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         datasetComboBox.setEnabled(false);
         featureComboBox.setEnabled(false);
         tableComboBox.setEnabled(false);
+        
+
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
@@ -333,4 +357,5 @@ private DynamicLinePlotPanel timelinePlotPanel;
     private Timer timer;
     private DVDataset dataset;
     private int counter;
+    private LinkedList<String> imagePathList;
 }
