@@ -24,8 +24,9 @@ public class PostgresSQLDBManager {
 
     private final static String GET_ALL_STRAINTYPEIDS = "SELECT straintypeid FROM straintype";
     private final static String GET_ALL_TABLE_NAMES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public'";
-    private final static String GET_KEYS_FROM_TABLE = "SELECT constraint_name, column_name FROM information_schema.key_column_usage WHERE table_name = ?;";
-
+    private final static String GET_KEYS_FROM_TABLE = "SELECT constraint_name, column_name FROM information_schema.key_column_usage WHERE table_name = ?";
+    private final static String GET_FRAME_RATE_BY_STRAIN_TYPE_ID = "SELECT framerate FROM videoinfo WHERE straintypeid = ?";
+    
     static {
         postgresSQLDBManager = new PostgresSQLDBManager();
     }
@@ -186,7 +187,36 @@ public class PostgresSQLDBManager {
         }
         return rowset;
     }
-
+    
+    public static String getFPSBySTID(String strainTypeId) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String result = null; 
+        
+        try {
+            ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_FRAME_RATE_BY_STRAIN_TYPE_ID);
+            ps.setString(1, strainTypeId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                result = rs.getString("framerate");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return result;
+    }
+    
     public static DVDataset getDVEntriesFromTable() {
         Statement stmt = null;
         ResultSet rs = null;

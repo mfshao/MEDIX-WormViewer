@@ -1,6 +1,5 @@
 package graphics;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import object.DVDataset;
@@ -28,7 +26,8 @@ import utils.GraphicUtils;
  * @author MSHAO1
  */
 public class DataVisualizationPanel extends javax.swing.JPanel {
-    static final int TIMER_INTERVAL = 33;
+    static int FPS = 30;
+    static int OFFSET = 7;
 
     private class DatasetComboBoxItemChangeListener implements ItemListener {
 
@@ -257,9 +256,16 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
         // TODO add your handling code here:         
         dataset = PostgresSQLDBManager.getDVEntriesFromTable();
-        imagePathList = utils.Utils.loadImagePathByStrainTypeId(ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvStrainTypeId(), 7);      
+        imagePathList = utils.Utils.loadImagePathByStrainTypeId(ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvStrainTypeId(), OFFSET);      
+        String fpsStr = PostgresSQLDBManager.getFPSBySTID(ConfigurationManager.getConfigurationManager().getDVConfiguration().getDvStrainTypeId());
         
-        timer = new Timer(TIMER_INTERVAL, new ActionListener() {
+        try {
+            FPS = Integer.parseInt(fpsStr);
+        } catch (NumberFormatException nfe) {
+            
+        }
+        
+        timer = new Timer(1000 / FPS, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (imagePathList != null && !imagePathList.isEmpty()){
@@ -291,8 +297,6 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
         datasetComboBox.setEnabled(false);
         featureComboBox.setEnabled(false);
         tableComboBox.setEnabled(false);
-        
-
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed

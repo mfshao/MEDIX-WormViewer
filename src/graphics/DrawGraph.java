@@ -27,10 +27,10 @@ public class DrawGraph extends JPanel {
     private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
     private static final int GRAPH_POINT_WIDTH = 12;
     private static final int Y_HATCH_CNT = 10;
-    private List<Integer> scores;
-    private BufferedImage paintImage = new BufferedImage(PREF_W, PREF_H, BufferedImage.TYPE_3BYTE_BGR);
-    private int xScale;
-    private int yScale;
+    private final List<Integer> scores;
+    private final BufferedImage paintImage = new BufferedImage(PREF_W, PREF_H, BufferedImage.TYPE_3BYTE_BGR);
+    private final int xScale;
+    private final int yScale;
 
     public int getxScale() {
         return xScale;

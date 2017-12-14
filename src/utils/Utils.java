@@ -23,7 +23,6 @@ public class Utils {
     };
 
     static final FilenameFilter IMAGE_FILTER = new FilenameFilter() {
-
         @Override
         public boolean accept(File dir, String name) {
             for (final String ext : EXTENSIONS) {

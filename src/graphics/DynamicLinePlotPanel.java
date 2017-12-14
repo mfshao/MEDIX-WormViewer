@@ -1,6 +1,6 @@
 package graphics;
 
-import static graphics.DataVisualizationPanel.TIMER_INTERVAL;
+import static graphics.DataVisualizationPanel.FPS;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class DynamicLinePlotPanel extends JPanel {
     private JTextArea textArea;
     private int currentFrame;
     private DynamicTimeSeriesCollection dataset;
+    private int timerInterval = 1000 / FPS;
 
     public DynamicLinePlotPanel(Timer timer, DVDataset dvDataset, JTextArea textArea) {
         this.dvDataset = dvDataset;
@@ -65,8 +66,8 @@ public class DynamicLinePlotPanel extends JPanel {
                 textArea.setText(textArea.getText() + "\nVideo playback finished!");
             } else {
                 float nextData = dvDatasetList.peek();
-                float dataStep = (nextData - newData[0]) / TIMER_INTERVAL;
-                for (int i = 0; i < TIMER_INTERVAL; i++) {
+                float dataStep = (nextData - newData[0]) / timerInterval;
+                for (int i = 0; i < timerInterval; i++) {
                     dataset.advanceTime();
                     newData[0] += i * dataStep;
                     dataset.appendData(newData);
