@@ -36,13 +36,13 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jPanel1.setMinimumSize(new java.awt.Dimension(820, 540));
         jPanel1.setPreferredSize(new java.awt.Dimension(820, 540));
         jPanel1.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Features", jPanel1);
+        jTabbedPane1.addTab("Static Data Visualization", jPanel1);
 
         jPanel2.setMaximumSize(new java.awt.Dimension(820, 540));
         jPanel2.setMinimumSize(new java.awt.Dimension(820, 540));
         jPanel2.setPreferredSize(new java.awt.Dimension(820, 540));
         jPanel2.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Data Visualization", jPanel2);
+        jTabbedPane1.addTab("Time Based Data Visualization", jPanel2);
 
         jPanel3.setMaximumSize(new java.awt.Dimension(820, 540));
         jPanel3.setMinimumSize(new java.awt.Dimension(820, 540));
@@ -59,7 +59,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
             .addGap(0, 540, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Data Parser", jPanel3);
+        jTabbedPane1.addTab("Data Management", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

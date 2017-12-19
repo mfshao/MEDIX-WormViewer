@@ -56,8 +56,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Features">
-                <Property name="tabTitle" type="java.lang.String" value="Features"/>
+              <JTabbedPaneConstraints tabName="Static Data Visualization">
+                <Property name="tabTitle" type="java.lang.String" value="Static Data Visualization"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -78,8 +78,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Data Visualization">
-                <Property name="tabTitle" type="java.lang.String" value="Data Visualization"/>
+              <JTabbedPaneConstraints tabName="Time Based Data Visualization">
+                <Property name="tabTitle" type="java.lang.String" value="Time Based Data Visualization"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -100,8 +100,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Data Parser">
-                <Property name="tabTitle" type="java.lang.String" value="Data Parser"/>
+              <JTabbedPaneConstraints tabName="Data Management">
+                <Property name="tabTitle" type="java.lang.String" value="Data Management"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

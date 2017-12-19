@@ -3,8 +3,6 @@ package graphics;
 import static graphics.DataVisualizationPanel.FPS;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 import javax.swing.JPanel;
@@ -18,7 +16,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
 import org.jfree.data.time.Millisecond;
-import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 
 public class DynamicLinePlotPanel extends JPanel {
@@ -26,11 +23,11 @@ public class DynamicLinePlotPanel extends JPanel {
     private static final int COUNT = 2 * 1000;
     private static final Random random = new Random();
     private final DVDataset dvDataset;
-    private Timer timer;
-    private JTextArea textArea;
+    private final Timer timer;
+    private final JTextArea textArea;
     private int currentFrame;
-    private DynamicTimeSeriesCollection dataset;
-    private int timerInterval = 1000 / FPS;
+    private final DynamicTimeSeriesCollection dataset;
+    private final int timerInterval = 1000 / FPS;
 
     public DynamicLinePlotPanel(Timer timer, DVDataset dvDataset, JTextArea textArea) {
         this.dvDataset = dvDataset;
@@ -82,8 +79,24 @@ public class DynamicLinePlotPanel extends JPanel {
     }
 
     private JFreeChart createChart(final XYDataset dataset) {
+        String yLabel = dvDataset.getTitle();
+        
+        if (yLabel.contains("angle")) {
+            yLabel += " ";
+            yLabel += "deg";
+        } else if (yLabel.contains("angluarvelocity")) {
+            yLabel += " ";
+            yLabel += "deg/s2";
+        } else if (yLabel.contains("speed")) {
+            yLabel += " ";
+            yLabel += "um/s";
+        } else if (yLabel.contains("acceleration")) {
+            yLabel += " ";
+            yLabel += "um/s2";
+        }
+        
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
-                "", "", dvDataset.getTitle(), dataset, false, false, false);
+                "", "", yLabel, dataset, false, false, false);
         final XYPlot plot = result.getXYPlot();
         ValueAxis domain = plot.getDomainAxis();
         domain.setAutoRange(true);
