@@ -2,6 +2,7 @@
 package singleton;
 
 import object.Configuration;
+import object.DMConfiguration;
 import object.DVConfiguration;
 
 /**
@@ -15,6 +16,7 @@ public class ConfigurationManager {
     
     private Configuration configuration = null;
     private DVConfiguration dvConfiguration = null;
+    private DMConfiguration dmConfiguration = null;
     
     static {
         configurationManager = new ConfigurationManager();
@@ -23,6 +25,7 @@ public class ConfigurationManager {
     private ConfigurationManager() {
         configuration =  new Configuration();
         dvConfiguration = new DVConfiguration();
+        dmConfiguration = new DMConfiguration();
     }
     
     public final static ConfigurationManager getConfigurationManager() {
@@ -35,5 +38,9 @@ public class ConfigurationManager {
     
     public final DVConfiguration getDVConfiguration() {
         return dvConfiguration;
+    }
+    
+    public final DMConfiguration getDMConfiguration() {
+        return dmConfiguration;
     }
 }

@@ -1,6 +1,11 @@
 package singleton;
 
 import com.sun.rowset.CachedRowSetImpl;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
 import object.QueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
 import object.DVDataset;
+import org.postgresql.copy.CopyManager;
+import org.postgresql.core.BaseConnection;
 
 /**
  *
@@ -26,7 +33,7 @@ public class PostgresSQLDBManager {
     private final static String GET_ALL_TABLE_NAMES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public'";
     private final static String GET_KEYS_FROM_TABLE = "SELECT constraint_name, column_name FROM information_schema.key_column_usage WHERE table_name = ?";
     private final static String GET_FRAME_RATE_BY_STRAIN_TYPE_ID = "SELECT framerate FROM videoinfo WHERE straintypeid = ?";
-    
+
     static {
         postgresSQLDBManager = new PostgresSQLDBManager();
     }
@@ -187,12 +194,12 @@ public class PostgresSQLDBManager {
         }
         return rowset;
     }
-    
+
     public static String getFPSBySTID(String strainTypeId) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String result = null; 
-        
+        String result = null;
+
         try {
             ps = ConnectionManager.getConnectionManager().getConnection().prepareStatement(GET_FRAME_RATE_BY_STRAIN_TYPE_ID);
             ps.setString(1, strainTypeId);
@@ -216,7 +223,7 @@ public class PostgresSQLDBManager {
         }
         return result;
     }
-    
+
     public static DVDataset getDVEntriesFromTable() {
         Statement stmt = null;
         ResultSet rs = null;
@@ -265,5 +272,31 @@ public class PostgresSQLDBManager {
         }
 
         return new DVDataset(min, max, resultList, title);
+    }
+
+    public static void saveOutputData(String outputPath) {
+        FileOutputStream fos = null;
+        try {
+            Connection connection = ConnectionManager.getConnectionManager().getConnection();
+            CopyManager copyManager = new CopyManager((BaseConnection) connection);
+            File file = new File(outputPath);
+            fos = new FileOutputStream(file);
+
+            copyManager.copyOut("COPY (" + ConfigurationManager.getConfigurationManager().getConfiguration().generateSQLQuery() + ") TO STDOUT WITH (FORMAT CSV)", fos);
+        } catch (SQLException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(PostgresSQLDBManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 }

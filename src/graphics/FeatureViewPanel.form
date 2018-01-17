@@ -167,8 +167,10 @@
     <Component class="javax.swing.JButton" name="downloadDatasetButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Download Dataset"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="downloadDatasetButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>

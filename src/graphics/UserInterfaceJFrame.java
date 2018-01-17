@@ -13,6 +13,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         initComponents();
         jPanel1.add(new FeatureViewPanel());
         jPanel2.add(new DataVisualizationPanel());
+        jPanel3.add(new DataParserPanel());
     }
 
     /**
@@ -47,18 +48,7 @@ public class UserInterfaceJFrame extends javax.swing.JFrame {
         jPanel3.setMaximumSize(new java.awt.Dimension(820, 540));
         jPanel3.setMinimumSize(new java.awt.Dimension(820, 540));
         jPanel3.setPreferredSize(new java.awt.Dimension(820, 540));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
-        );
-
+        jPanel3.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Data Management", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

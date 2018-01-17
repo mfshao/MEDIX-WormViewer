@@ -1,29 +1,15 @@
-
 package graphics;
 
-import singleton.ConfigurationManager;
-import singleton.PostgresSQLDBManager;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.swing.JFileChooser;
 
 /**
  *
  * @author MSHAO1
  */
-
-
 public class DataParserPanel extends javax.swing.JPanel {
-    
-    private class DatasetComboBoxItemChangeListener implements ItemListener {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Object item = e.getItem();
-//                ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(item.toString());
-            }
-        }
-    }
 
     /**
      * Creates new form DataParserPanel
@@ -32,15 +18,15 @@ public class DataParserPanel extends javax.swing.JPanel {
         initComponents();
     }
     
-    private void initData() {
-        dppDatasetComboBox.removeAllItems();
-        ArrayList<String> resultList = PostgresSQLDBManager.getAllStrainTypeIDs();
-        for (String s : resultList) {
-            dppDatasetComboBox.addItem(s);
+    private boolean validateFilePath(String filePath) {
+        if(!Files.exists(Paths.get(filePath+"\\data"))){
+            consoleDisplayTextArea.append("Error: no 'data' path under root!\n");
+            return false;
         }
-        dppDatasetComboBox.addItemListener(new DatasetComboBoxItemChangeListener());
-        dppDatasetComboBox.setSelectedIndex(0);
-//        ConfigurationManager.getConfigurationManager().getConfiguration().setDppStrainTypeId(dppDatasetComboBox.getSelectedItem().toString());
+        if(!Files.exists(Paths.get(filePath+"\\data"))){
+            
+        }
+        return true;
     }
 
     /**
@@ -53,22 +39,30 @@ public class DataParserPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         consoleDisplayScrollPane = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        dppDatasetComboBox = new javax.swing.JComboBox<>();
+        consoleDisplayTextArea = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
         outputHeadersCheckBox = new javax.swing.JCheckBox();
-        dppStartButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        dpPathButton = new javax.swing.JButton();
+        tableGenerationButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        dtPathButton = new javax.swing.JButton();
+        uploadIntoDBButton = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(820, 540));
         setMinimumSize(new java.awt.Dimension(820, 540));
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        consoleDisplayScrollPane.setViewportView(jTextArea2);
+        consoleDisplayTextArea.setColumns(20);
+        consoleDisplayTextArea.setRows(5);
+        consoleDisplayTextArea.setFocusable(false);
+        consoleDisplayScrollPane.setViewportView(consoleDisplayTextArea);
 
-        jLabel1.setText("Select Dataset");
-
-        dppDatasetComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        jPanel1.setMaximumSize(new java.awt.Dimension(800, 65));
+        jPanel1.setMinimumSize(new java.awt.Dimension(800, 65));
 
         outputHeadersCheckBox.setText("Output with Headers");
         outputHeadersCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -77,7 +71,111 @@ public class DataParserPanel extends javax.swing.JPanel {
             }
         });
 
-        dppStartButton.setText("Start");
+        jLabel1.setText("Dataset Path");
+
+        jTextField1.setFocusable(false);
+        jTextField1.setMaximumSize(new java.awt.Dimension(240, 20));
+        jTextField1.setMinimumSize(new java.awt.Dimension(240, 20));
+        jTextField1.setPreferredSize(new java.awt.Dimension(240, 20));
+
+        dpPathButton.setText("Browse");
+        dpPathButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dpPathButtonActionPerformed(evt);
+            }
+        });
+
+        tableGenerationButton.setText("Generate 17 Tables");
+        tableGenerationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tableGenerationButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(dpPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(outputHeadersCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tableGenerationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dpPathButton)
+                    .addComponent(outputHeadersCheckBox)
+                    .addComponent(tableGenerationButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+
+        jLabel2.setText("Dataset Path");
+
+        dtPathButton.setText("Browse");
+        dtPathButton.setMaximumSize(new java.awt.Dimension(150, 23));
+        dtPathButton.setMinimumSize(new java.awt.Dimension(150, 23));
+        dtPathButton.setPreferredSize(new java.awt.Dimension(150, 23));
+        dtPathButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dtPathButtonActionPerformed(evt);
+            }
+        });
+
+        uploadIntoDBButton.setText("Upload Into DB");
+        uploadIntoDBButton.setAutoscrolls(true);
+        uploadIntoDBButton.setMaximumSize(new java.awt.Dimension(150, 23));
+        uploadIntoDBButton.setMinimumSize(new java.awt.Dimension(150, 23));
+        uploadIntoDBButton.setPreferredSize(new java.awt.Dimension(150, 23));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(dtPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 224, Short.MAX_VALUE)
+                        .addComponent(uploadIntoDBButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dtPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(uploadIntoDBButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -87,15 +185,8 @@ public class DataParserPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(consoleDisplayScrollPane)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(dppDatasetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
-                        .addComponent(outputHeadersCheckBox)
-                        .addGap(184, 184, 184)
-                        .addComponent(dppStartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -104,13 +195,10 @@ public class DataParserPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(consoleDisplayScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dppDatasetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(outputHeadersCheckBox)
-                    .addComponent(dppStartButton))
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(73, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -118,13 +206,45 @@ public class DataParserPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_outputHeadersCheckBoxActionPerformed
 
+    private void tableGenerationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableGenerationButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableGenerationButtonActionPerformed
+
+    private void dpPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dpPathButtonActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Choose dataset directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getPath());
+            validateFilePath(chooser.getSelectedFile().getPath());
+        } else {
+            System.out.println("No Selection ");
+        }
+    }//GEN-LAST:event_dpPathButtonActionPerformed
+
+    private void dtPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dtPathButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dtPathButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane consoleDisplayScrollPane;
-    private javax.swing.JComboBox<String> dppDatasetComboBox;
-    private javax.swing.JButton dppStartButton;
+    private javax.swing.JTextArea consoleDisplayTextArea;
+    private javax.swing.JButton dpPathButton;
+    private javax.swing.JButton dtPathButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JCheckBox outputHeadersCheckBox;
+    private javax.swing.JButton tableGenerationButton;
+    private javax.swing.JButton uploadIntoDBButton;
     // End of variables declaration//GEN-END:variables
 }

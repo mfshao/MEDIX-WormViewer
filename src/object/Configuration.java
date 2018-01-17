@@ -38,7 +38,20 @@ public class Configuration {
             sb.append("FROM ");
         }
         sb.append(tableName);
-
+        
+        if(tableKeys.contains("frameid")){
+            sb.append(" WHERE frameid LIKE ");
+            sb.append("'");
+            sb.append(strainTypeId);
+            sb.append("\\_%'");
+        } else if (tableKeys.contains("straintypeid")) {
+            sb.append(" WHERE straintypeid LIKE ");
+            sb.append("'");
+            sb.append(strainTypeId);
+            sb.append("%'");
+        }
+        
+        System.out.println(sb.toString());
         return sb.toString();
     }
 

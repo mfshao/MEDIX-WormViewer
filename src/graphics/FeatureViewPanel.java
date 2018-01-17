@@ -7,6 +7,7 @@ import singleton.ConfigurationManager;
 import singleton.PostgresSQLDBManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,11 +17,13 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.rowset.CachedRowSet;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -230,7 +233,11 @@ public class FeatureViewPanel extends javax.swing.JPanel {
         });
 
         downloadDatasetButton.setText("Download Dataset");
-        downloadDatasetButton.setEnabled(false);
+        downloadDatasetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downloadDatasetButtonActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Summary Display");
 
@@ -312,6 +319,29 @@ public class FeatureViewPanel extends javax.swing.JPanel {
             summaryScrollPane.getViewport().add(summaryTable);
         }
     }//GEN-LAST:event_viewFeaturesButtonActionPerformed
+
+    private void downloadDatasetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadDatasetButtonActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Save file");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setSelectedFile(new File("output"));
+        chooser.setFileFilter(new FileNameExtensionFilter("CSV file", "csv"));
+
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            String filename = chooser.getSelectedFile().getPath();
+            if (!filename .endsWith(".csv")){
+                filename += ".csv";
+            }
+            PostgresSQLDBManager.saveOutputData(filename);
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + filename);
+        } else {
+            System.out.println("No Selection ");
+        }
+    }//GEN-LAST:event_downloadDatasetButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
