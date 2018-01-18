@@ -47,6 +47,8 @@ public class DataVisualizationPanel extends javax.swing.JPanel {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object item = e.getItem();
                 ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableName(item.toString());
+                ArrayList<String> tableKeys = PostgresSQLDBManager.getAllKeysOfTable(item.toString());
+                ConfigurationManager.getConfigurationManager().getDVConfiguration().setDvTableKeys(tableKeys);
                 GraphicUtils.populateFeatureComboBox(featureComboBox);
             }
         }
