@@ -2,8 +2,9 @@
 package singleton;
 
 import object.Configuration;
-import object.DMConfiguration;
+import object.MFConfiguration;
 import object.DVConfiguration;
+import object.GTConfiguration;
 
 /**
  *
@@ -16,7 +17,8 @@ public class ConfigurationManager {
     
     private Configuration configuration = null;
     private DVConfiguration dvConfiguration = null;
-    private DMConfiguration dmConfiguration = null;
+    private MFConfiguration mfConfiguration = null;
+    private GTConfiguration gtConfiguration = null;
     
     static {
         configurationManager = new ConfigurationManager();
@@ -25,7 +27,8 @@ public class ConfigurationManager {
     private ConfigurationManager() {
         configuration =  new Configuration();
         dvConfiguration = new DVConfiguration();
-        dmConfiguration = new DMConfiguration();
+        mfConfiguration = new MFConfiguration();
+        gtConfiguration = new GTConfiguration();
     }
     
     public final static ConfigurationManager getConfigurationManager() {
@@ -40,7 +43,7 @@ public class ConfigurationManager {
         return dvConfiguration;
     }
     
-    public final DMConfiguration getDMConfiguration() {
-        return dmConfiguration;
+    public final MFConfiguration getMFConfiguration() {
+        return mfConfiguration;
     }
 }

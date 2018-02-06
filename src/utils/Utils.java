@@ -12,6 +12,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -102,5 +104,19 @@ public class Utils {
         }
         
         return imagePathList;
+    }
+    
+    public static void displayErrorMessage(JPanel jpanel, String message){
+        JOptionPane.showMessageDialog(jpanel,
+                        message,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public static void displayWarningMessage(JPanel jpanel, String message){
+        JOptionPane.showMessageDialog(jpanel,
+                        message,
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
     }
 }

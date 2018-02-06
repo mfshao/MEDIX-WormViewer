@@ -4,6 +4,11 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import object.FilePathConfiguration;
+import singleton.ConfigurationManager;
+import utils.MasterFileCreater;
+import utils.Utils;
 
 /**
  *
@@ -17,16 +22,35 @@ public class DataParserPanel extends javax.swing.JPanel {
     public DataParserPanel() {
         initComponents();
     }
-    
+
     private boolean validateFilePath(String filePath) {
-        if(!Files.exists(Paths.get(filePath+"\\data"))){
+        if (!Files.exists(Paths.get(filePath + "\\data"))) {
             consoleDisplayTextArea.append("Error: no 'data' path under root!\n");
             return false;
         }
-        if(!Files.exists(Paths.get(filePath+"\\data"))){
-            
-        }
         return true;
+    }
+    
+    private boolean validateMFFilePath(String filePath) {
+        if (!Files.exists(Paths.get(filePath + "\\data\\movementFeatures.csv"))) {
+            consoleDisplayTextArea.append("Error: no movementFeatures.csv under data folder!\n");
+            Utils.displayErrorMessage(this, "Error: no movementFeatures.csv under data folder!\n");
+            return false;
+        } else if (!Files.exists(Paths.get(filePath + "\\matlab\\AllFeatures.csv"))) {
+            consoleDisplayTextArea.append("Error: no AllFeatures.csv under matlab folder!\n");
+            Utils.displayErrorMessage(this, "Error: no AllFeatures.csv under matlab folder!\n");
+            return false;
+        }
+        consoleDisplayTextArea.setText("");
+        return true;
+    }
+    
+    private void setupFileConfiguration(FilePathConfiguration fc, String filePath){
+        String[] filePathComponents = filePath.split("\\\\");
+        if(filePathComponents.length > 0){
+            String cName = filePathComponents[filePathComponents.length - 1];
+            fc.setAllPaths(filePath, cName);
+        }
     }
 
     /**
@@ -51,6 +75,11 @@ public class DataParserPanel extends javax.swing.JPanel {
         jTextField2 = new javax.swing.JTextField();
         dtPathButton = new javax.swing.JButton();
         uploadIntoDBButton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        mfPathButton = new javax.swing.JButton();
+        mfGenerationButton = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(820, 540));
         setMinimumSize(new java.awt.Dimension(820, 540));
@@ -63,6 +92,7 @@ public class DataParserPanel extends javax.swing.JPanel {
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jPanel1.setMaximumSize(new java.awt.Dimension(800, 65));
         jPanel1.setMinimumSize(new java.awt.Dimension(800, 65));
+        jPanel1.setPreferredSize(new java.awt.Dimension(800, 65));
 
         outputHeadersCheckBox.setText("Output with Headers");
         outputHeadersCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +138,7 @@ public class DataParserPanel extends javax.swing.JPanel {
                         .addComponent(dpPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(outputHeadersCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                         .addComponent(tableGenerationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -127,6 +157,9 @@ public class DataParserPanel extends javax.swing.JPanel {
         );
 
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        jPanel2.setMaximumSize(new java.awt.Dimension(800, 65));
+        jPanel2.setMinimumSize(new java.awt.Dimension(800, 65));
+        jPanel2.setPreferredSize(new java.awt.Dimension(800, 65));
 
         jLabel2.setText("Dataset Path");
 
@@ -177,6 +210,63 @@ public class DataParserPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel3.setMaximumSize(new java.awt.Dimension(800, 65));
+        jPanel3.setMinimumSize(new java.awt.Dimension(800, 65));
+        jPanel3.setPreferredSize(new java.awt.Dimension(800, 65));
+
+        jLabel3.setText("Dataset Path");
+
+        jTextField3.setFocusable(false);
+        jTextField3.setMaximumSize(new java.awt.Dimension(240, 20));
+        jTextField3.setMinimumSize(new java.awt.Dimension(240, 20));
+        jTextField3.setPreferredSize(new java.awt.Dimension(240, 20));
+
+        mfPathButton.setText("Browse");
+        mfPathButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mfPathButtonActionPerformed(evt);
+            }
+        });
+
+        mfGenerationButton.setText("Generate Master File");
+        mfGenerationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mfGenerationButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(mfPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(mfGenerationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mfPathButton)
+                    .addComponent(mfGenerationButton))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -185,20 +275,23 @@ public class DataParserPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(consoleDisplayScrollPane)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(consoleDisplayScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(consoleDisplayScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -221,7 +314,9 @@ public class DataParserPanel extends javax.swing.JPanel {
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getPath());
-            validateFilePath(chooser.getSelectedFile().getPath());
+            if (validateFilePath(chooser.getSelectedFile().getPath())) {
+                jTextField1.setText(chooser.getSelectedFile().getPath());
+            }
         } else {
             System.out.println("No Selection ");
         }
@@ -231,6 +326,36 @@ public class DataParserPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_dtPathButtonActionPerformed
 
+    private void mfPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mfPathButtonActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Choose dataset directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getPath());
+            if (validateMFFilePath(chooser.getSelectedFile().getPath())) {
+                jTextField3.setText(chooser.getSelectedFile().getPath());
+                setupFileConfiguration(ConfigurationManager.getConfigurationManager().getMFConfiguration(), chooser.getSelectedFile().getPath());
+            }
+        } else {
+            System.out.println("No Selection ");
+        }
+    }//GEN-LAST:event_mfPathButtonActionPerformed
+
+    private void mfGenerationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mfGenerationButtonActionPerformed
+        // TODO add your handling code here:
+        if(jTextField3.getText().equals("")){
+            Utils.displayWarningMessage(this, "Please select directory first!");
+            return;
+        }
+        MasterFileCreater mfc = new MasterFileCreater(consoleDisplayTextArea);
+        mfc.createMasterFile();
+    }//GEN-LAST:event_mfGenerationButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane consoleDisplayScrollPane;
@@ -239,10 +364,15 @@ public class DataParserPanel extends javax.swing.JPanel {
     private javax.swing.JButton dtPathButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JButton mfGenerationButton;
+    private javax.swing.JButton mfPathButton;
     private javax.swing.JCheckBox outputHeadersCheckBox;
     private javax.swing.JButton tableGenerationButton;
     private javax.swing.JButton uploadIntoDBButton;
