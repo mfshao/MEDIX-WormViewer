@@ -1,6 +1,5 @@
 package utils;
 
-
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +18,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import singleton.ConfigurationManager;
 
 /**
  *
@@ -26,18 +26,12 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class TableCreater {
 
-    static final String MASTER_FILE_PATH = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\data\\masterFile.csv";
-    static final String KYLE_PATH = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\data";
-    static final String LOG_PATH = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\log";
-    static final String OUTPUT_PATH = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\dbtables";
-    static final String INPUT_PATH = "\\\\CDM-MEDIXSRV\\Nematodes\\data\\*****\\input";
-    static final int OFFSET = 7;
-    static String CATAGORY_NAME = "";
     static final String[] TABLE_NAMES = new String[]{"Straintype", "ImageInfo", "ExperimentalFeatures", "FeatureLog", "HeadTailInfo", "LogDat", "RawMovementFeatures", "MovementFeaturesBinned", "Occupancy", "PostureFeatures", "ReferenceFeatures", "SegmentCentroid", "SizeandShapeFeatures", "Tracker", "TrajectoryFeatures", "VideoInfo"};
 
     private ArrayList<String> frameIdList;
     private String strainTypeId;
     private CSVParser masterFileDataRecordParser;
+    private javax.swing.JTextArea consoleDisplayTextArea;
 
     static final String[] EXTENSIONS = new String[]{
         "jpeg", "jpg"
@@ -55,19 +49,19 @@ public class TableCreater {
         }
     };
 
-    public TableCreater(String cName) {
+    public TableCreater(javax.swing.JTextArea consoleDisplayTextArea) {
         try {
-            CATAGORY_NAME = cName;
-            new File(OUTPUT_PATH.replace("*****", CATAGORY_NAME)).mkdir();
+            this.consoleDisplayTextArea = consoleDisplayTextArea;
+            new File(ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath()).mkdir();
             strainTypeId = "";
             frameIdList = new ArrayList<>();
-            final String masterFilePath = MASTER_FILE_PATH.replace("*****", CATAGORY_NAME);
-            System.out.println("====== Start of reading in master file ======");
+            final String masterFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getMasterFilePath();
+            consoleDisplayTextArea.setText("====== Start of reading in master file ======\n");
             Reader masterFileIn;
             masterFileIn = new FileReader(masterFilePath);
             masterFileDataRecordParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(masterFileIn);
-            System.out.println("done!");
-            System.out.println("====== End of reading in master file ======");
+            consoleDisplayTextArea.setText("done!\n");
+            consoleDisplayTextArea.setText("====== End of reading in master file ======\n");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -78,20 +72,20 @@ public class TableCreater {
     private void resetMasterFileDataRecordParser() throws IOException {
         if (!masterFileDataRecordParser.isClosed()) {
             try {
-                final String masterFilePath = MASTER_FILE_PATH.replace("*****", CATAGORY_NAME);
-                System.out.println("====== Start of reseting MF parser ======");
+                final String masterFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getMasterFilePath();
+                consoleDisplayTextArea.setText("====== Start of reseting MF parser ======\n");
                 Reader masterFileIn;
                 masterFileIn = new FileReader(masterFilePath);
                 masterFileDataRecordParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(masterFileIn);
-                System.out.println("done!");
-                System.out.println("====== End of reseting MF parser ======");
+                consoleDisplayTextArea.setText("done!\n");
+                consoleDisplayTextArea.setText("====== End of reseting MF parser ======\n");
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    private void createAllDBTables() {
+    public void createAllDBTables() {
         createStraintype();
         createOccupancy();
         createImageInfo();
@@ -101,23 +95,21 @@ public class TableCreater {
         creatMovementFeaturesBinned();
         creatOtherTables();
 
-        System.out.println();
-        System.out.println("!!! All 17 tables completed for " + strainTypeId + " !!!");
-        System.out.println();
+        consoleDisplayTextArea.setText("\n\n!!! All 17 tables completed for " + strainTypeId + " !!!\n");
     }
 
     private void createStraintype() {
         try {
             final String[] outputHeaders = new String[]{"StrainTypeid", "WormType", "ResolutionType", "FoodCondition", "SIndex"};
             final String outputFileName = "Straintype.csv";
-            final String outputFilePath = OUTPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + outputFileName;
+            final String outputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath() + "\\" + outputFileName;
             File outputFile = new File(outputFilePath);
             outputFile.createNewFile();
 
             final Appendable outputFileWriter = new FileWriter(outputFilePath);
             final CSVPrinter printer = CSVFormat.DEFAULT.withHeader(outputHeaders).print(outputFileWriter);
 
-            String[] decompositedCName = CATAGORY_NAME.split("_");
+            String[] decompositedCName = ConfigurationManager.getConfigurationManager().getGTConfiguration().getCatagoryName().split("_");
             String wormType = "";
             String resolutionType = "";
             String foodCondition = "";
@@ -142,7 +134,7 @@ public class TableCreater {
 
                 strainTypeId = wormType + "_" + resolutionType + "_" + foodCondition + "_" + sIndex;
             } else {
-                System.out.println("CATAGORY_NAME parse fails");
+                consoleDisplayTextArea.setText("CATAGORY_NAME parse fails\n");
                 return;
             }
 
@@ -155,7 +147,7 @@ public class TableCreater {
             printer.printRecord(outputFileData);
             printer.flush();
             printer.close();
-            System.out.println("========= StrainTypeId creat completed ==========");
+            consoleDisplayTextArea.setText("========= StrainTypeId creat completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -167,7 +159,7 @@ public class TableCreater {
             String occupancyOutputFileName = "Occupancy.csv";
             CSVPrinter occupancyPrinter = getOutputCSVPrinter(occupancyOutputFileName, occupancyHeaders);
 
-            String occupancyInputFilePath = KYLE_PATH.replace("*****", CATAGORY_NAME) + "\\occupancy.csv";
+            String occupancyInputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getKylePath() + "\\occupancy.csv";
             Reader occupancyInputFileIn;
             occupancyInputFileIn = new FileReader(occupancyInputFilePath);
             CSVParser occupancyInputFileDataRecordParser = CSVFormat.DEFAULT.parse(occupancyInputFileIn);
@@ -185,7 +177,7 @@ public class TableCreater {
             }
 
             occupancyPrinter.close();
-            System.out.println("========= Occupancy creation completed ==========");
+            consoleDisplayTextArea.setText("========= Occupancy creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -195,7 +187,7 @@ public class TableCreater {
         try {
             final String[] outputHeaders = new String[]{"FrameId", "StrainTypeId", "ImageNumber", "TimeElapsed", "TimeDelta", "IMinute"};
             final String outputFileName = "ImageInfo.csv";
-            final String outputFilePath = OUTPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + outputFileName;
+            final String outputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath() + "\\" + outputFileName;
             File outputFile = new File(outputFilePath);
             outputFile.createNewFile();
 
@@ -230,10 +222,10 @@ public class TableCreater {
                 printer.printRecord(outputFileData);
                 printer.flush();
 
-                System.out.println(imageNumberStr);
+                consoleDisplayTextArea.setText(imageNumberStr+"\n");
             }
             printer.close();
-            System.out.println("========= ImageInfo creation completed ==========");
+            consoleDisplayTextArea.setText("========= ImageInfo creation completed ==========\n");
 
             createVideoInfo(strainTypeId, timeElapsedStr, Integer.parseInt(imageNumberStr) + 1);
         } catch (IOException ex) {
@@ -245,7 +237,7 @@ public class TableCreater {
         try {
             final String[] outputHeaders = new String[]{"StrainTypeId", "Resolution", "FrameRate", "Length", "TotalFrames", "VideoPath"};
             final String outputFileName = "VideoInfo.csv";
-            final String outputFilePath = OUTPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + outputFileName;
+            final String outputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath() + "\\" + outputFileName;
             File outputFile = new File(outputFilePath);
             outputFile.createNewFile();
 
@@ -259,7 +251,7 @@ public class TableCreater {
                 resolution = "640*480";
             }
             int frameRate = Math.round(numberOfFrames / Float.parseFloat(endTimeStr));
-            String videoPath = INPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + CATAGORY_NAME + ".avi";
+            String videoPath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getInputPath() + ".avi";
 
             List<String> outputFileData = new ArrayList<>();
             outputFileData.add(strainTypeId);
@@ -271,7 +263,7 @@ public class TableCreater {
             printer.printRecord(outputFileData);
             printer.flush();
             printer.close();
-            System.out.println("========= VideoInfo creation completed ==========");
+            consoleDisplayTextArea.setText("========= VideoInfo creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -283,13 +275,13 @@ public class TableCreater {
             String outputFileName = "ImagePathInfo.csv";
             CSVPrinter imagePathInfoFeaturesPrinter = getOutputCSVPrinter(outputFileName, imagePathInfoFeaturesOutputHeaders);
 
-            String imagePathDirStr = INPUT_PATH.replace("*****", CATAGORY_NAME) + "\\";
+            String imagePathDirStr = ConfigurationManager.getConfigurationManager().getGTConfiguration().getInputPath() + "\\";
             File imagePathDir = new File(imagePathDirStr);
 
             Iterator<String> frameIdItr = frameIdList.iterator();
             int counter = 0;
             for (final File f : imagePathDir.listFiles(IMAGE_FILTER)) {
-                if (counter < OFFSET) {
+                if (counter < ConfigurationManager.getConfigurationManager().getGTConfiguration().getOffset()) {
                     counter++;
                     continue;
                 }
@@ -303,9 +295,9 @@ public class TableCreater {
                     imagePathInfoFeaturesPrinter.flush();
                 }
             }
-            
+
             imagePathInfoFeaturesPrinter.close();
-            System.out.println("========= ImagePathInfo creation completed ==========");
+            consoleDisplayTextArea.setText("========= ImagePathInfo creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -317,12 +309,12 @@ public class TableCreater {
             String outputFileName = "LogDat.csv";
             CSVPrinter logDatPrinter = getOutputCSVPrinter(outputFileName, logDatOutputHeaders);
 
-            String trackerDatPath = LOG_PATH.replace("*****", CATAGORY_NAME) + "\\log.dat";
+            String trackerDatPath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getLogPath() + "\\log.dat";
             File trackDat = new File(trackerDatPath);
             if (!trackDat.exists()) {
-                System.out.println("No log.dat file!");
+                consoleDisplayTextArea.setText("No log.dat file!\n");
                 logDatPrinter.close();
-                System.out.println("========= LogDat creation completed ==========");
+                consoleDisplayTextArea.setText("========= LogDat creation completed ==========\n");
                 return;
             }
 
@@ -350,7 +342,7 @@ public class TableCreater {
 
             is.close();
             logDatPrinter.close();
-            System.out.println("========= LogDat creation completed ==========");
+            consoleDisplayTextArea.setText("========= LogDat creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -360,14 +352,14 @@ public class TableCreater {
         try {
             final String[] outputHeaders = new String[]{"StrainTypeId", "MMinute", "Speed", "Acceleration", "Angle", "AngularVelocity"};
             final String outputFileName = "MovementFeaturesBinned.csv";
-            final String outputFilePath = OUTPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + outputFileName;
+            final String outputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath() + "\\" + outputFileName;
             File outputFile = new File(outputFilePath);
             outputFile.createNewFile();
 
             final Appendable outputFileWriter = new FileWriter(outputFilePath);
             final CSVPrinter printer = CSVFormat.DEFAULT.withHeader(outputHeaders).print(outputFileWriter);
 
-            final String inputFilePath = KYLE_PATH.replace("*****", CATAGORY_NAME) + "\\movementFeaturesBinned.csv";
+            final String inputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getKylePath() + "\\movementFeaturesBinned.csv";
             Reader inputFileIn;
             inputFileIn = new FileReader(inputFilePath);
             CSVParser inputFileDataRecordParser = CSVFormat.DEFAULT.parse(inputFileIn);
@@ -385,7 +377,7 @@ public class TableCreater {
             }
             inputFileDataRecordParser.close();
             printer.close();
-            System.out.println("========= MovementFeaturesBinned creation completed ==========");
+            consoleDisplayTextArea.setText("========= MovementFeaturesBinned creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -401,19 +393,19 @@ public class TableCreater {
             outputFileName = "FeatureLog.csv";
             CSVPrinter featureLogPrinter = getOutputCSVPrinter(outputFileName, featureLogOutputHeaders);
 
-            String trackerInputFilePath = KYLE_PATH.replace("*****", CATAGORY_NAME) + "\\tracker.csv";
+            String trackerInputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getKylePath() + "\\tracker.csv";
             Reader trackerInputFileIn;
             trackerInputFileIn = new FileReader(trackerInputFilePath);
             CSVParser trackerInputFileDataRecordParser = CSVFormat.DEFAULT.parse(trackerInputFileIn);
             Iterator<CSVRecord> trackerInputFileDataRecordParserItr = trackerInputFileDataRecordParser.iterator();
 
-            String featureLogInputFilePath = LOG_PATH.replace("*****", CATAGORY_NAME) + "\\feature.log";
+            String featureLogInputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getLogPath() + "\\feature.log";
             Reader featureLogInputFileIn;
             featureLogInputFileIn = new FileReader(featureLogInputFilePath);
             CSVParser featureLogInputFileDataRecordParser = CSVFormat.DEFAULT.parse(featureLogInputFileIn);
             Iterator<CSVRecord> featureLogInputFileDataRecordParserItr = featureLogInputFileDataRecordParser.iterator();
 
-            for (int i = 0; i < OFFSET; i++) {
+            for (int i = 0; i < ConfigurationManager.getConfigurationManager().getGTConfiguration().getOffset(); i++) {
                 trackerInputFileDataRecordParserItr.next(); // frame offset
                 featureLogInputFileDataRecordParserItr.next();
             }
@@ -423,7 +415,7 @@ public class TableCreater {
                 CSVRecord trackerRecord = trackerInputFileDataRecordParserItr.next();
                 CSVRecord featureLogRecord = featureLogInputFileDataRecordParserItr.next();
                 String frameId = frameIdItr.next();
-                System.out.println(frameId);
+                consoleDisplayTextArea.setText(frameId+"\n");
 
                 List<String> trackerOutputFileData = new ArrayList<>();
                 trackerOutputFileData.add(frameId);
@@ -441,10 +433,10 @@ public class TableCreater {
             }
             trackerInputFileIn.close();
             trackerPrinter.close();
-            System.out.println("========= Tracker creation completed ==========");
+            consoleDisplayTextArea.setText("========= Tracker creation completed ==========\n");
             featureLogInputFileIn.close();
             featureLogPrinter.close();
-            System.out.println("========= FeatureLog creation completed ==========");
+            consoleDisplayTextArea.setText("========= FeatureLog creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -455,7 +447,7 @@ public class TableCreater {
             resetMasterFileDataRecordParser();
 
             if (frameIdList.isEmpty()) {
-                System.out.println("Empty frameid list found!");
+                consoleDisplayTextArea.setText("Empty frameid list found!\n");
                 return;
             }
 
@@ -492,17 +484,11 @@ public class TableCreater {
             CSVPrinter trajectoryFeaturesPrinter = getOutputCSVPrinter(outputFileName, trajectoryFeaturesOutputHeaders);
 
             Iterator<String> frameIdItr = frameIdList.iterator();
-            if (frameIdItr.hasNext()) {
-                System.out.println("FIhasnext");
-            }
             Iterator<CSVRecord> masterFileDataRecordItr = masterFileDataRecordParser.iterator();
-            if (masterFileDataRecordItr.hasNext()) {
-                System.out.println("MFhasnext");
-            }
             while (masterFileDataRecordItr.hasNext()) {
                 CSVRecord record = masterFileDataRecordItr.next();
                 String frameId = frameIdItr.next();
-                System.out.println(frameId);
+                consoleDisplayTextArea.setText(frameId+"\n");
 
                 createExperimentalFeatures(experimentalFeaturesPrinter, record, frameId);
                 createGenericTableFromMasterFile(headTailInfoPrinter, record, frameId, headTailInfoOutputHeaders, 1);
@@ -523,14 +509,14 @@ public class TableCreater {
             sizeandShapeFeaturesPrinter.close();
             trajectoryFeaturesPrinter.close();
 
-            System.out.println("========= MF related tables creation completed ==========");
+            consoleDisplayTextArea.setText("========= MF related tables creation completed ==========\n");
         } catch (IOException ex) {
             Logger.getLogger(TableCreater.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private CSVPrinter getOutputCSVPrinter(String fileName, String[] headers) throws IOException {
-        String outputFilePath = OUTPUT_PATH.replace("*****", CATAGORY_NAME) + "\\" + fileName;
+        String outputFilePath = ConfigurationManager.getConfigurationManager().getGTConfiguration().getOutputPath() + "\\" + fileName;
         File outputFile = new File(outputFilePath);
         outputFile.createNewFile();
         Appendable outputFileWriter = new FileWriter(outputFilePath);
@@ -563,44 +549,4 @@ public class TableCreater {
         printer.flush();
     }
 
-    private static String[] parseInputCatgoryNames(String inputArg) {
-        String[] argSplit = inputArg.split("_");
-        String lastArg = argSplit[argSplit.length - 1].replaceAll("[a-zA-Z]", "");
-        String[] lastArgSplit = lastArg.split("-");
-        lastArg = argSplit[argSplit.length - 1].replaceAll("[^a-zA-Z]", "");
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < argSplit.length - 1; i++) {
-            sb.append(argSplit[i]);
-            sb.append("_");
-        }
-        String preparedoutput = sb.toString();
-
-        if (lastArgSplit.length != 2) {
-            System.out.println("Parsing error with input: " + inputArg);
-            return new String[]{};
-        }
-
-        try {
-            int start = Integer.parseInt(lastArgSplit[0]);
-            int end = Integer.parseInt(lastArgSplit[1]);
-
-            if (start > end) {
-                System.out.println("Start must be less or equals to end: " + inputArg);
-                return new String[]{};
-            }
-
-            int len = end - start + 1;
-
-            String[] result = new String[len];
-
-            for (int i = 0; i < len; i++) {
-                result[i] = preparedoutput + lastArg + Integer.toString(start + i);
-            }
-
-            return result;
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-            return new String[]{};
-        }
-    }
 }

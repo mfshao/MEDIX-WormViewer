@@ -15,7 +15,7 @@ public abstract class FilePathConfiguration {
     private String logPath = "";
     private String outputPath = "";
     private String inputPath = "";
-    private int OFFSET = 7;
+    private int offset = 7;
     private String catagoryName = "";
     
     public void setAllPaths(String dPath, String cName){
@@ -57,8 +57,8 @@ public abstract class FilePathConfiguration {
         return inputPath;
     }
 
-    public int getOFFSET() {
-        return OFFSET;
+    public int getOffset() {
+        return offset;
     }
 
     public String getCatagoryName() {

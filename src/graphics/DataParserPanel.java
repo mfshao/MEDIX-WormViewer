@@ -1,13 +1,12 @@
 package graphics;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import object.FilePathConfiguration;
 import singleton.ConfigurationManager;
 import utils.MasterFileCreater;
+import utils.TableCreater;
 import utils.Utils;
 
 /**
@@ -26,11 +25,12 @@ public class DataParserPanel extends javax.swing.JPanel {
     private boolean validateFilePath(String filePath) {
         if (!Files.exists(Paths.get(filePath + "\\data"))) {
             consoleDisplayTextArea.append("Error: no 'data' path under root!\n");
+            Utils.displayErrorMessage(this, "Error: no 'data' path under root!\n");
             return false;
         }
         return true;
     }
-    
+
     private boolean validateMFFilePath(String filePath) {
         if (!Files.exists(Paths.get(filePath + "\\data\\movementFeatures.csv"))) {
             consoleDisplayTextArea.append("Error: no movementFeatures.csv under data folder!\n");
@@ -44,10 +44,10 @@ public class DataParserPanel extends javax.swing.JPanel {
         consoleDisplayTextArea.setText("");
         return true;
     }
-    
-    private void setupFileConfiguration(FilePathConfiguration fc, String filePath){
+
+    private void setupFileConfiguration(FilePathConfiguration fc, String filePath) {
         String[] filePathComponents = filePath.split("\\\\");
-        if(filePathComponents.length > 0){
+        if (filePathComponents.length > 0) {
             String cName = filePathComponents[filePathComponents.length - 1];
             fc.setAllPaths(filePath, cName);
         }
@@ -297,10 +297,17 @@ public class DataParserPanel extends javax.swing.JPanel {
 
     private void outputHeadersCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputHeadersCheckBoxActionPerformed
         // TODO add your handling code here:
+        ConfigurationManager.getConfigurationManager().getGTConfiguration().setWithHeader(outputHeadersCheckBox.isSelected());
     }//GEN-LAST:event_outputHeadersCheckBoxActionPerformed
 
     private void tableGenerationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableGenerationButtonActionPerformed
         // TODO add your handling code here:
+        if (jTextField1.getText().equals("")) {
+            Utils.displayWarningMessage(this, "Please select directory first!");
+            return;
+        }
+        TableCreater tc = new TableCreater(consoleDisplayTextArea);
+        tc.createAllDBTables();
     }//GEN-LAST:event_tableGenerationButtonActionPerformed
 
     private void dpPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dpPathButtonActionPerformed
@@ -316,9 +323,10 @@ public class DataParserPanel extends javax.swing.JPanel {
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getPath());
             if (validateFilePath(chooser.getSelectedFile().getPath())) {
                 jTextField1.setText(chooser.getSelectedFile().getPath());
+                setupFileConfiguration(ConfigurationManager.getConfigurationManager().getGTConfiguration(), chooser.getSelectedFile().getPath());
             }
         } else {
-            System.out.println("No Selection ");
+            System.out.println("No Selection");
         }
     }//GEN-LAST:event_dpPathButtonActionPerformed
 
@@ -342,13 +350,13 @@ public class DataParserPanel extends javax.swing.JPanel {
                 setupFileConfiguration(ConfigurationManager.getConfigurationManager().getMFConfiguration(), chooser.getSelectedFile().getPath());
             }
         } else {
-            System.out.println("No Selection ");
+            System.out.println("No Selection");
         }
     }//GEN-LAST:event_mfPathButtonActionPerformed
 
     private void mfGenerationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mfGenerationButtonActionPerformed
         // TODO add your handling code here:
-        if(jTextField3.getText().equals("")){
+        if (jTextField3.getText().equals("")) {
             Utils.displayWarningMessage(this, "Please select directory first!");
             return;
         }

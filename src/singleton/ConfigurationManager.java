@@ -42,6 +42,10 @@ public class ConfigurationManager {
     public final DVConfiguration getDVConfiguration() {
         return dvConfiguration;
     }
+
+    public final GTConfiguration getGTConfiguration() {
+        return gtConfiguration;
+    }
     
     public final MFConfiguration getMFConfiguration() {
         return mfConfiguration;
