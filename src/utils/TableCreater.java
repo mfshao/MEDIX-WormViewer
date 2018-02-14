@@ -222,7 +222,7 @@ public class TableCreater {
                 printer.printRecord(outputFileData);
                 printer.flush();
 
-                consoleDisplayTextArea.setText(imageNumberStr+"\n");
+                consoleDisplayTextArea.setText(imageNumberStr + "\n");
             }
             printer.close();
             consoleDisplayTextArea.setText("========= ImageInfo creation completed ==========\n");
@@ -415,7 +415,7 @@ public class TableCreater {
                 CSVRecord trackerRecord = trackerInputFileDataRecordParserItr.next();
                 CSVRecord featureLogRecord = featureLogInputFileDataRecordParserItr.next();
                 String frameId = frameIdItr.next();
-                consoleDisplayTextArea.setText(frameId+"\n");
+                consoleDisplayTextArea.setText(frameId + "\n");
 
                 List<String> trackerOutputFileData = new ArrayList<>();
                 trackerOutputFileData.add(frameId);
@@ -488,7 +488,7 @@ public class TableCreater {
             while (masterFileDataRecordItr.hasNext()) {
                 CSVRecord record = masterFileDataRecordItr.next();
                 String frameId = frameIdItr.next();
-                consoleDisplayTextArea.setText(frameId+"\n");
+                consoleDisplayTextArea.setText(frameId + "\n");
 
                 createExperimentalFeatures(experimentalFeaturesPrinter, record, frameId);
                 createGenericTableFromMasterFile(headTailInfoPrinter, record, frameId, headTailInfoOutputHeaders, 1);

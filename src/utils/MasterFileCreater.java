@@ -22,7 +22,7 @@ import singleton.ConfigurationManager;
 
 
 public class MasterFileCreater {
-    private javax.swing.JTextArea consoleDisplayTextArea;
+    private final javax.swing.JTextArea consoleDisplayTextArea;
     
     private enum MasterFileHeaders {
         FrameNum, ElapsedTimeInLogFile, DeltaTimeInLogFile, CentroidX, CentroidY, Speed, Acceleration, Angle, AngularVelocity, ElapsedTimeInVideo, NumRows, NumCols, Resol, CameraStartRow, CameraStartCol, CameraStepRows, CameraStepCols, CameraOffsetRows, CameraOffsetCols, CropOffsetRows, CropOffsetCols, TotalOffsetRows, TotalOffsetCols, LclCentroidRow, LclCentroidCol, GblCentroidRow, GblCentroidCol, Area, MajorAxisLength, MinorAxisLength, Elongation, ComptFactor, Heywood, Hydraulic, RectBigSide, RectRatio, Perimeter, Ixx, Iyy, Ixy, MaxWidth, Posture, SkewerAngle, IsLoop, Length, HeadRow, HeadCol, TailRow, TailCol, HeadCurvPtRow, HeadCurvPtCol, TailCurvPtRow, TailCurvPtCol, CurvHead, CurvTail, IntH, IntT, SkelNumPixels, LengthToPixels, Fatness, Thickness, SegStatus, SktAmpRatio, SktCmptFactor, SktElgFactor, SktIxx, SktIyy, SktAglAve, Xsym, Ysym, XYsym, TrackAmplitude, TrackPeriod, SktvAglAve, SktvDisAveToLength, SktvDisMaxToLength, SktvDisMinToLength, SktvAglMax, SktpMovement, DirectionCode, GblCentroidColNew, GblCentroidRowNew, DeltaTimeInVideo, DeltaX, DeltaY, DeltaDist, VectorAngle, InstantVelocity, InstantAccel, CumDist, Range
